@@ -1,6 +1,7 @@
-RUN := erl -pa ebin -pa deps/*/ebin -smp enable -s lager -boot start_sasl ${ERL_ARGS}
 NODE ?= canillita
 REBAR ?= "./rebar"
+CONFIG ?= "priv/app.config"
+RUN := erl -pa ebin -pa deps/*/ebin -smp enable -s lager -boot start_sasl -config ${CONFIG} ${ERL_ARGS}
 
 all:
 	${REBAR} get-deps compile
