@@ -22,6 +22,9 @@ start_listeners() ->
     _Pid -> ok
   end,
 
+  sumo:create_schema(),
+  ok = pg2:create(canillita_listeners),
+  
   Port = canillita:get_env(http_port, 4004),
   ListenerCount = canillita:get_env(http_listener_count, 20),
 
@@ -30,7 +33,7 @@ start_listeners() ->
       [
         {'_',
           [
-            { <<"/news">>, canillita_handler, []}
+            {<<"/news">>, canillita_news_handler, []}
           ]
         }
       ]),
@@ -51,7 +54,7 @@ start_listeners() ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 init({}) ->
   {ok, { {one_for_one, 5, 10},
-    [ {canillita_events, {gen_event, start_link, [{local, canillita_events}]}, permanent, 5000, worker, [gen_event]}
-    , {canillita_http,   {canillita_sup, start_listeners, []}, permanent, 1000, worker, [canillita_sup]}
+    [ {canillita_events,    {gen_event, start_link, [{local, canillita_events}]}, permanent, 5000, worker, [gen_event]}
+    , {canillita_http,      {canillita_sup, start_listeners, []}, permanent, 1000, worker, [canillita_sup]}
     ]}
   }.
