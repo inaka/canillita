@@ -17,14 +17,6 @@
 start_link() -> supervisor:start_link({local, ?MODULE}, ?MODULE, {}).
 
 start_listeners() ->
-  case whereis(cowboy_sup) of
-    undefined -> throw({missing, cowboy_sup});
-    _Pid -> ok
-  end,
-
-  sumo:create_schema(),
-  ok = pg2:create(canillita_listeners),
-  
   {ok, Port} = application:get_env(http_port),
   {ok, ListenerCount} = application:get_env(http_listener_count),
 
@@ -52,6 +44,9 @@ start_listeners() ->
 %% BEHAVIOUR CALLBACKS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 init({}) ->
+  sumo:create_schema(),
+  ok = pg2:create(canillita_listeners),
+  
   {ok, { {one_for_one, 5, 10},
     [ {canillita_http,
         {canillita_sup, start_listeners, []},
