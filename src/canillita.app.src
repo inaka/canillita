@@ -1,8 +1,10 @@
 {application, canillita,
  [
-  {description, "Canillita: Simple Paperboy-themed PubSub for RubyConfAR 2013"},
+  {description,
+    "Canillita: Simple Paperboy-themed PubSub"},
   {vsn, "1.0"},
-  {applications, [kernel,stdlib,lager,cowboy,emysql,sumo_db]},
+  {applications,
+    [kernel,stdlib,lager,cowboy,emysql,sumo_db]},
   {mod, {canillita, []}}
  ]
 }.
