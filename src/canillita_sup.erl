@@ -25,13 +25,20 @@ start_listeners() ->
   sumo:create_schema(),
   ok = pg2:create(canillita_listeners),
   
-  Port = canillita:get_env(http_port, 4004),
-  ListenerCount = canillita:get_env(http_listener_count, 20),
+  Port =
+    case application:get_env(http_port) of
+      {ok, HP} -> HP;
+      undefined -> 4004
+    end,
+  ListenerCount =
+    case application:get_env(http_listener_count) of
+      {ok, HLC} -> HLC;
+      undefined -> 20
+    end,
 
   Dispatch =
     cowboy_router:compile(
-      [
-        {'_',
+      [ {'_',
           [
             {<<"/news">>, canillita_news_handler, []}
           ]
