@@ -2,10 +2,7 @@
  [
   {description, "Canillita: Simple Paperboy-themed PubSub for RubyConfAR 2013"},
   {vsn, "1.0"},
-  {id, "canillita"},
-  {registered,   []},
   {applications, [kernel,stdlib,lager,cowboy,emysql,sumo_db]},
-  {mod, {canillita, []}},
-  {env, []}
+  {mod, {canillita, []}}
  ]
 }.
