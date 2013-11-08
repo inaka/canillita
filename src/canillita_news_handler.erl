@@ -52,15 +52,8 @@ handle_post(Req, State) ->
       
       NewsFlash = canillita_news:new(Title, Content),
       notify(NewsFlash),
-      FlashId   = canillita_news:get_id(NewsFlash),
 
-      Req2 =
-        cowboy_req:set_resp_header(
-          <<"X-News-Flash-Id">>, integer_to_binary(FlashId), Req1),
-
-      {Host, Req3} = cowboy_req:header(<<"host">>, Req2),
-      Location     = <<"http://", Host/binary, "/news">>,
-      {{true, Location}, Req3, State};
+      {true, Req1, State};
     {bad_json, Reason} ->
       {ok, Req2} = cowboy_req:reply(400, [], jiffy:encode(Reason), Req1),
       {halt, Req2, State}
