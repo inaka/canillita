@@ -6,6 +6,12 @@ require 'em-synchrony/activerecord'
 
 class News < ActiveRecord::Base
   self.table_name = 'canillita_news'
+
+  def stream_to(env)
+    env.stream_send(
+      ["event:#{self.title}",
+       "data:#{self.content}\n\n"].join("\n"))
+  end
 end
 
 class Server < Goliath::API
@@ -21,19 +27,19 @@ class Server < Goliath::API
 
       case env[Goliath::Request::REQUEST_METHOD]
       when 'POST'
-        Pubsub.channel.push(
+        newsFlash = News.new(
         {
           :title => env.params["title"] ||= "Generic News", 
           :content => env.params["content"] ||= ""
           })
+        newsFlash.save
+        Pubsub.channel.push newsFlash
 
         [ 204, { }, [ ] ]
 
       when 'GET'
         sub_id = Pubsub.channel.subscribe do |newsFlash|
-          env.stream_send(
-            ["event:#{newsFlash[:title]}",
-             "data:#{newsFlash[:content]}\n\n"].join("\n"))
+          newsFlash.stream_to env
         end
         
         env['pubsub.subscriber.id'] = sub_id
@@ -47,10 +53,8 @@ class Server < Goliath::API
         
         news = News.all
         env.logger.warn news.length
-        news.each { |nf|
-          env.stream_send(
-            ["event:#{nf[:title]}",
-             "data:#{nf[:content]}\n\n"].join("\n"))
+        news.each { |newsFlash|
+          newsFlash.stream_to env
         }
         streaming_response(200, { 'Content-Type' => "text/event-stream" })
 
