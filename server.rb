@@ -2,6 +2,11 @@ $: << File.dirname(__FILE__)
 
 require 'pubsub'
 require 'goliath'
+require 'em-synchrony/activerecord'
+
+class News < ActiveRecord::Base
+  self.table_name = 'canillita_news'
+end
 
 class Server < Goliath::API
   use Goliath::Rack::Params
@@ -16,8 +21,6 @@ class Server < Goliath::API
 
       case env[Goliath::Request::REQUEST_METHOD]
       when 'POST'
-        env.logger.info "POST!"
-
         Pubsub.channel.push(
         {
           :title => env.params["title"] ||= "Generic News", 
@@ -25,11 +28,12 @@ class Server < Goliath::API
           })
 
         [ 204, { }, [ ] ]
+
       when 'GET'
-        sub_id = Pubsub.channel.subscribe do |msg|
+        sub_id = Pubsub.channel.subscribe do |newsFlash|
           env.stream_send(
-            ["event:#{msg[:title]}",
-             "data:#{msg[:content]}\n\n"].join("\n"))
+            ["event:#{newsFlash[:title]}",
+             "data:#{newsFlash[:content]}\n\n"].join("\n"))
         end
         
         env['pubsub.subscriber.id'] = sub_id
@@ -41,6 +45,13 @@ class Server < Goliath::API
           end
         end
         
+        news = News.all
+        env.logger.warn news.length
+        news.each { |nf|
+          env.stream_send(
+            ["event:#{nf[:title]}",
+             "data:#{nf[:content]}\n\n"].join("\n"))
+        }
         streaming_response(200, { 'Content-Type' => "text/event-stream" })
 
       end
