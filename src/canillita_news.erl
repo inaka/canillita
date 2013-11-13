@@ -50,4 +50,4 @@ get_title(NewsFlash) -> proplists:get_value(title, NewsFlash).
 
 get_content(NewsFlash) -> proplists:get_value(content, NewsFlash).
 
-latest_news() -> sumo:find_all(canillita_news).
+latest_news() -> lists:reverse(sumo:find_all(canillita_news)).
