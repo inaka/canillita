@@ -9,8 +9,8 @@ class News < ActiveRecord::Base
 
   def stream_to(env)
     env.stream_send(
-      ["event:#{self.title}",
-       "data:#{self.content}\n\n"].join("\n"))
+      ["event: #{self.title}",
+       "data: #{self.content}\n\n"].join("\n"))
   end
 end
 
@@ -52,7 +52,7 @@ class Server < Goliath::API
         end
         
         news = News.all
-        EM.add_timer(0) do
+        EM.add_timer(0 ) do
           news.each { |newsFlash|
             newsFlash.stream_to env
           }
