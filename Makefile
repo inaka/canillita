@@ -19,3 +19,6 @@ run: quick
 	if [ -n "${NODE}" ]; then ${RUN} -name ${NODE}@`hostname` -s canillita; \
 	else ${RUN} -s canillita; \
 	fi
+
+scale:
+	tsung -f `pwd`/priv/tsung.xml -l log/tsung/ -F start

@@ -19,10 +19,12 @@
 %% COWBOY CALLBACKS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 init(_Transport, Req, _Opts) ->
-  case cowboy_req:method(Req) of
-    {<<"POST">>, _} ->
+  {Method, Req1} = cowboy_req:method(Req),
+  lager:notice("~s /news", [Method]),
+  case Method of
+    <<"POST">> ->
       {upgrade, protocol, cowboy_rest};
-    {<<"GET">>, Req1} ->
+    <<"GET">> ->
       handle_get(Req1)
   end.
 

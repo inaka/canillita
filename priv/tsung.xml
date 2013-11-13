@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE tsung SYSTEM "/usr/local/share/tsung/tsung-1.0.dtd">
+<tsung loglevel="debug" version="1.0">
+
+  <clients>
+    <client host="localhost" use_controller_vm="true" maxusers="100000"/>
+  </clients>
+
+  <servers>
+    <server host="localhost" port="4004" type="tcp"></server>
+  </servers>
+
+  <load>
+    <arrivalphase phase="1" duration="30" unit="second">
+      <users arrivalrate="10" unit="second"></users>
+    </arrivalphase>
+  </load>
+
+  <sessions>
+
+    <session weight="10" name="subscriber" type="ts_http">
+      <request>
+        <http method="GET" url="/news" />
+      </request>
+    </session>
+
+    <session weight="1" name="publisher" type="ts_http">
+      <for from="1" to="10" incr="1" var="foridx">
+
+        <request>
+          <http method="POST" url="/news" contents='{"content":"test content"}'>
+            <http_header name="Content-Type" value="application/json"/>
+          </http>
+        </request>
+
+        <thinktime value="5"></thinktime>
+      </for>
+    </session>
+  </sessions>
+</tsung>
+
