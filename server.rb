@@ -52,10 +52,12 @@ class Server < Goliath::API
         end
         
         news = News.all
-        env.logger.warn news.length
-        news.each { |newsFlash|
-          newsFlash.stream_to env
-        }
+        EM.add_timer(0) do
+          news.each { |newsFlash|
+            newsFlash.stream_to env
+          }
+        end
+
         streaming_response(200, { 'Content-Type' => "text/event-stream" })
 
       end
