@@ -26,6 +26,13 @@ class Server < Goliath::API
     when "/news"
 
       case env[Goliath::Request::REQUEST_METHOD]
+      when 'DELETE'
+        News.delete_all
+
+        # Pubsub.channel.push :close
+
+        [ 204, { }, [ ] ]
+
       when 'POST'
         newsFlash = News.new(
         {
