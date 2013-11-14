@@ -22,3 +22,7 @@ run: quick
 
 scale:
 	tsung -f `pwd`/priv/tsung.xml -l log/tsung/ -F start
+	cd log/tsung/`ls log/tsung/ | sort -r | head -n1` && \
+	/usr/local/lib/tsung/bin/tsung_stats.pl && \
+	open report.html && \
+	cd -

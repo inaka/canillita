@@ -11,6 +11,7 @@
   , get_title/1
   , get_content/1
   , latest_news/0
+  , flush/0
   ]).
 %%% Behaviour callbacks.
 -export([sumo_schema/0, sumo_wakeup/1, sumo_sleep/1]).
@@ -51,3 +52,5 @@ get_title(NewsFlash) -> proplists:get_value(title, NewsFlash).
 get_content(NewsFlash) -> proplists:get_value(content, NewsFlash).
 
 latest_news() -> lists:reverse(sumo:find_all(canillita_news)).
+
+flush() -> sumo:delete_all(canillita_news).

@@ -7,6 +7,7 @@
   , allowed_methods/2
   , content_types_accepted/2
   , resource_exists/2
+  , delete_resource/2
   , info/3
   , terminate/3
   ]).
@@ -22,19 +23,31 @@ init(_Transport, Req, _Opts) ->
   {Method, Req1} = cowboy_req:method(Req),
   lager:notice("~s /news", [Method]),
   case Method of
-    <<"POST">> ->
-      {upgrade, protocol, cowboy_rest};
     <<"GET">> ->
-      handle_get(Req1)
+      handle_get(Req1);
+    _ ->
+      {upgrade, protocol, cowboy_rest}
   end.
 
-allowed_methods(Req, State) -> {[<<"POST">>], Req, State}.
+allowed_methods(Req, State) -> {[<<"POST">>, <<"DELETE">>], Req, State}.
 
 content_types_accepted(Req, State) ->
   {[{<<"application/json">>, handle_post}], Req, State}.
 
-resource_exists(Req, State) -> {false, Req, State}.
+resource_exists(Req, State) ->
+  {Method, Req1} = cowboy_req:method(Req),
+  {Method /= <<"POST">>, Req1, State}.
 
+delete_resource(Req, State) ->
+  canillita_news:flush(),
+  lists:foreach(
+    fun(Listener) ->
+      Listener ! stop
+    end, pg2:get_members(canillita_listeners)),
+  {true, Req, State}.  
+
+info(stop, Req, State) ->
+  {ok, Req, State};
 info({news_flash, NewsFlash}, Req, State) ->
   send_flash(<<"news_flash">>, NewsFlash, Req),
   {loop, Req, State}.
