@@ -11,38 +11,34 @@
   </servers>
 
   <load>
+    <user session="ender" start_time="0" unit="second" />
     <user session="publisher" start_time="0" unit="second" />
-    <arrivalphase phase="1" duration="30" unit="second">
-      <users arrivalrate="1" unit="second"></users>
+    <user session="ender" start_time="65" unit="second" />
+    <arrivalphase phase="1" duration="60" unit="second">
+      <users arrivalrate="10" unit="second"></users>
     </arrivalphase>
-    <user session="ender" start_time="32" unit="second" />
   </load>
 
   <sessions>
-    <session probability="0" name="publisher" type="ts_http">
-      <for from="1" to="15" incr="1" var="x">
-        <request>
-          <http method="POST" version="1.1" url="/news" contents='{"content":"content 0"}'>
+    <session weight="0" name="publisher" type="ts_http">
+      <for from="1" to="50" incr="1" var="x">
+        <request subst='true'>
+          <http method="POST" version="1.1" url="/news" contents='{"content":"%%_x%%"}'>
             <http_header name="Content-Type" value="application/json"/>
           </http>
         </request>
-        <thinktime value="1"/>
-        <request>
-          <http method="POST" version="1.1" url="/news" contents='{"content":"content 1"}'>
-            <http_header name="Content-Type" value="application/json"/>
-          </http>
-        </request>
-        <thinktime value="1"/>
+        <thinktime value="1" random="true"/>
       </for>
     </session>
 
-    <session probability="100" name="subscriber" type="ts_http">
+    <session weight="100" name="subscriber" type="ts_http">
+      <thinktime value="1"/>
       <request>
         <http method="GET" url="/news" /> 
       </request>
     </session>
 
-    <session probability="0" name="ender" type="ts_http">
+    <session weight="0" name="ender" type="ts_http">
       <request>
         <http method="DELETE" url="/news" />
       </request>
