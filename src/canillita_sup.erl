@@ -31,6 +31,7 @@ start_listeners() ->
 
   RanchOptions =
     [ {port, Port}
+    , {max_connections, 9999}
     ],
   CowboyOptions =
     [ {env,       [{dispatch, Dispatch}]}
