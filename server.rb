@@ -29,7 +29,7 @@ class Server < Goliath::API
       when 'DELETE'
         News.delete_all
 
-        # Pubsub.channel.push :close
+        Pubsub.channel.push :close
 
         [ 204, { }, [ ] ]
 
@@ -46,7 +46,11 @@ class Server < Goliath::API
 
       when 'GET'
         sub_id = Pubsub.channel.subscribe do |newsFlash|
-          newsFlash.stream_to env
+          if newsFlash == :close
+            env.stream_close
+          else
+            newsFlash.stream_to env
+          end
         end
         
         env['pubsub.subscriber.id'] = sub_id
