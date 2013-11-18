@@ -35,7 +35,7 @@ resource_exists(Req, State) -> {false, Req, State}.
 
 info({news_flash, NewsFlash}, Req, State) ->
   send_flash(NewsFlash, Req),
-  {loop, Req, State, hibernate}.
+  {loop, Req, State}.
 
 terminate(_Reason, _Req, _State) -> ok.
 
@@ -73,7 +73,7 @@ handle_get(Req) ->
 
   ok = pg2:join(canillita_listeners, self()),
 
-  {loop, Req1, undefined, hibernate}.
+  {loop, Req1, {}}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% AUXILIARY FUNCTIONS
@@ -100,8 +100,5 @@ notify(NewsFlash) ->
 send_flash(NewsFlash, Req) ->
   Event = canillita_news:get_title(NewsFlash),
   Data  = canillita_news:get_content(NewsFlash),
-  send_data(Event, Data, Req).
-
-send_data(Event, Data, Req) ->
   Chunk = <<"event: ", Event/binary, "\ndata: ", Data/binary, "\n\n">>,
   cowboy_req:chunk(Chunk, Req).
