@@ -29,7 +29,7 @@ init(_Transport, Req, _Opts) ->
 allowed_methods(Req, State) -> {[<<"POST">>], Req, State}.
 
 content_types_accepted(Req, State) ->
-  {[{{<<"application">>, <<"json">>, []}, handle_post}], Req, State}.
+  {[{<<"application/json">>, handle_post}], Req, State}.
 
 resource_exists(Req, State) -> {false, Req, State}.
 
