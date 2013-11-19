@@ -34,7 +34,7 @@ content_types_accepted(Req, State) ->
 resource_exists(Req, State) -> {false, Req, State}.
 
 info({news_flash, NewsFlash}, Req, State) ->
-  send_flash(NewsFlash, Req),
+  send_flash(<<"news_flash">>, NewsFlash, Req),
   {loop, Req, State}.
 
 terminate(_Reason, _Req, _State) -> ok.
@@ -68,7 +68,7 @@ handle_get(Req) ->
 
   lists:foreach(
     fun(NewsFlash) ->
-      send_flash(NewsFlash, Req1)
+      send_flash(<<"old_news_flash">>, NewsFlash, Req1)
     end, LatestNews),
 
   ok = pg2:join(canillita_listeners, self()),
@@ -97,8 +97,11 @@ notify(NewsFlash) ->
       Listener ! {news_flash, NewsFlash}
     end, pg2:get_members(canillita_listeners)).
 
-send_flash(NewsFlash, Req) ->
-  Event = canillita_news:get_title(NewsFlash),
-  Data  = canillita_news:get_content(NewsFlash),
-  Chunk = <<"event: ", Event/binary, "\ndata: ", Data/binary, "\n\n">>,
+send_flash(Event, NewsFlash, Req) ->
+  Title   = canillita_news:get_title(NewsFlash),
+  Content = canillita_news:get_content(NewsFlash),
+  Chunk   =
+    <<"event: ", Event/binary,   "\n",
+      "data: ",  Title/binary,   "\n",
+      "data: ",  Content/binary, "\n\n">>,
   cowboy_req:chunk(Chunk, Req).
