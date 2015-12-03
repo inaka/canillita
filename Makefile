@@ -2,9 +2,9 @@ PROJECT = canillita
 
 CONFIG ?= test/test.config
 
-DEPS = sumo_rest lasse
+DEPS = sumo_rest lasse katana
 SHELL_DEPS = sync
-TEST_DEPS = katana shotgun
+TEST_DEPS = shotgun mixer
 LOCAL_DEPS = tools compiler syntax_tools common_test inets test_server dialyzer wx
 
 dep_sumo_rest = git https://github.com/inaka/sumo_rest.git 0.1.0
