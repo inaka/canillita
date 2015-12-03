@@ -1,0 +1,14 @@
+{application, canillita, [
+    {description, "Canillita - your first Erlang server!"},
+    {vsn, "0.1.0"},
+    {modules, []},
+    {registered, []},
+    {applications, [
+        kernel,
+        stdlib,
+        sumo_rest,
+        lasse
+    ]},
+    {mod, {canillita_app, []}},
+    {env, []}
+]}.
