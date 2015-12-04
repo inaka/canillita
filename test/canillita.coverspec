@@ -2,6 +2,6 @@
 {
  incl_mods,
  [
-   canillita_app
+   canillita
  ]
 }.
