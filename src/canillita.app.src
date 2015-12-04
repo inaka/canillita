@@ -1,0 +1,17 @@
+{application, canillita, [
+  {description, "Canillita - your first Erlang server!"},
+  {vsn, "2.0.0"},
+  {modules, []},
+  {registered, []},
+  {applications, [
+      kernel,
+      stdlib,
+      lager,
+      sasl,
+      cowboy,
+      sumo_db
+  ]},
+  {mod, {canillita, []}},
+  {env, []},
+  {start_phases , [{create_schema, []}]}
+]}.
