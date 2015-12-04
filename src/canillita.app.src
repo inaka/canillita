@@ -11,7 +11,7 @@
       cowboy,
       sumo_db
   ]},
-  {mod, {canillita_app, []}},
+  {mod, {canillita, []}},
   {env, []},
   {start_phases , [{create_schema, []}]}
 ]}.

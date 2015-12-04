@@ -1,4 +1,4 @@
--module(canillita_app).
+-module(canillita).
 -behaviour(application).
 
 -export([start/0, start/2, start_phase/3]).
