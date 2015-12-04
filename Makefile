@@ -12,6 +12,7 @@ dep_lasse = git https://github.com/inaka/lasse.git 1.0.1
 dep_sync = git https://github.com/rustyio/sync.git 9c78e7b
 dep_katana = git https://github.com/inaka/erlang-katana.git 07efe94
 dep_shotgun = git https://github.com/inaka/shotgun.git 0.1.12
+dep_mixer = git https://github.com/inaka/mixer.git 0.1.4
 
 include erlang.mk
 
