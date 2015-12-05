@@ -2,7 +2,7 @@ PROJECT = canillita
 
 CONFIG ?= test/test.config
 
-DEPS = sumo_rest lasse katana
+DEPS = sumo_rest lasse katana swagger
 SHELL_DEPS = sync
 TEST_DEPS = shotgun mixer
 LOCAL_DEPS = tools compiler syntax_tools common_test inets test_server dialyzer wx
@@ -13,6 +13,7 @@ dep_sync = git https://github.com/rustyio/sync.git 9c78e7b
 dep_katana = git https://github.com/inaka/erlang-katana.git 07efe94
 dep_shotgun = git https://github.com/inaka/shotgun.git 0.1.12
 dep_mixer = git https://github.com/inaka/mixer.git 0.1.4
+dep_swagger = git https://github.com/inaka/cowboy-swagger.git 0.1.0
 
 include erlang.mk
 
