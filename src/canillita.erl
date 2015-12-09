@@ -29,4 +29,19 @@ start_phase(create_schema, _StartType, []) ->
     {error, {Node, {already_exists, Node}}} -> ok
   end,
   {ok, _} = application:ensure_all_started(mnesia),
-  sumo:create_schema().
+  sumo:create_schema();
+start_phase(start_cowboy_listeners, _StartType, []) ->
+  Handlers =
+    [ canillita_newspapers_handler
+    , canillita_single_newspaper_handler
+    , cowboy_swagger_handler
+    ],
+  Routes = trails:trails(Handlers),
+  trails:store(Routes),
+  Dispatch = trails:single_host_compile(Routes),
+  TransOpts = [{port, 4892}],
+  ProtoOpts = [{env, [{dispatch, Dispatch}, {compress, true}]}],
+  case cowboy:start_http(canillita_server, 1, TransOpts, ProtoOpts) of
+    {ok, _} -> ok;
+    {error, {already_started, _}} -> ok
+  end.

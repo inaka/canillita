@@ -3,5 +3,8 @@
  incl_mods,
  [
    canillita
+ , canillita_newspapers
+ , canillita_newspapers_handler
+ , canillita_single_newspaper_handler
  ]
 }.

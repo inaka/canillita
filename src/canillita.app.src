@@ -8,10 +8,10 @@
       stdlib,
       lager,
       sasl,
-      cowboy,
-      sumo_db
+      sumo_rest,
+      lasse
   ]},
   {mod, {canillita, []}},
   {env, []},
-  {start_phases , [{create_schema, []}]}
+  {start_phases , [{create_schema, []}, {start_cowboy_listeners, []}]}
 ]}.
