@@ -34,6 +34,7 @@ start_phase(start_cowboy_listeners, _StartType, []) ->
   Handlers =
     [ canillita_newspapers_handler
     , canillita_single_newspaper_handler
+    , canillita_newsflash_handler
     , cowboy_swagger_handler
     ],
   Routes = trails:trails(Handlers),
