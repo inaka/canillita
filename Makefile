@@ -2,7 +2,7 @@ PROJECT = canillita
 
 CONFIG ?= test/test.config
 
-DEPS = sumo_rest lasse katana swagger
+DEPS = sumo_rest lasse katana swagger sumo_db trails
 SHELL_DEPS = sync
 TEST_DEPS = shotgun mixer
 LOCAL_DEPS = tools compiler syntax_tools common_test inets test_server dialyzer wx
@@ -14,6 +14,8 @@ dep_katana = git https://github.com/inaka/erlang-katana.git 07efe94
 dep_shotgun = git https://github.com/inaka/shotgun.git 0.1.12
 dep_mixer = git https://github.com/inaka/mixer.git 0.1.4
 dep_swagger = git https://github.com/inaka/cowboy-swagger.git 0.1.0
+dep_sumo_db = git https://github.com/inaka/sumo_db.git 0.3.13
+dep_trails = git https://github.com/inaka/cowboy-trails.git 0.1.0
 
 include erlang.mk
 
