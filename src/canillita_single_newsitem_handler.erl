@@ -51,10 +51,9 @@ trails() ->
 -spec resource_exists( Req::cowboy_req:req(), State::state()) ->
   {boolean(), cowboy_req:req(), state()}.
 resource_exists(Req, State) ->
-  #{opts := #{model := Model}, id := Id} = State,
+  #{opts := #{model := _Model}, id := Id} = State,
   {NewspaperName, Req2} = cowboy_req:binding(name, Req),
-  Conditions = [{id, Id}, {newspaper_name, NewspaperName}],
-  case canillita_newsitems_repo:newsitem_exists(Model, Conditions) of
+  case canillita_newsitems_repo:fetch(NewspaperName, Id) of
     notfound -> {false, Req2, State};
     Entity -> {true, Req2, State#{entity => Entity}}
   end.
