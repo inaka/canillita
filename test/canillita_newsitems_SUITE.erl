@@ -163,11 +163,36 @@ not_found(_Config) ->
                                  ),
 
   Newspaper1 = create_newspaper(<<"newspaper1">>, <<"description1">>),
+  Newspaper1Bin = list_to_binary(Newspaper1),
   NewsItem1Url = "/newspapers/"++Newspaper1++"/news",
 
-  ct:comment("Unable to get non-existing newsitem"),
+  ct:comment("Create a newsitem"),
+  #{status_code := 201, body := Body1} =
+    canillita_test_utils:api_call(
+      post
+    , "/newspapers/"++Newspaper1++"/news"
+    , Headers
+    , #{ <<"title">> => <<"title1">>
+       , <<"body">> => <<"body1">>
+       }
+    ),
+  #{ <<"id">> := NewsItem1Id
+   , <<"newspaper_name">> := Newspaper1Bin
+   , <<"title">> := <<"title1">>
+   , <<"body">> := <<"body1">>
+   , <<"created_at">> := _CreatedAt
+   } = sr_json:decode(Body1),
+
+  ct:comment("Unable to get non-existing newsitem with a valid newspaper"),
   #{status_code := 404} =
     canillita_test_utils:api_call(get, NewsItem1Url++"/non-existing-id"),
+
+  ct:comment("Unable to get existing newsitem id with invalid newspaper"),
+  #{status_code := 404} =
+    canillita_test_utils:api_call(
+      get
+    , "/newspapers/non-existing-newspaper/news/"++NewsItem1Id
+    ),
 
   {comment, ""}.
 
