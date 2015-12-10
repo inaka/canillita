@@ -1,5 +1,5 @@
 %%% @doc POST /newspapers/:name/news handler.
--module(canillita_newsflash_handler).
+-module(canillita_newsflashes_handler).
 
 -behaviour(trails_handler).
 
@@ -40,7 +40,7 @@ trails() ->
      },
   Metadata =
     #{ post =>
-       #{ tags => ["newsflash"]
+       #{ tags => ["newsflashes"]
         , description => "Creates a new news flash"
         , consumes => ["application/json"]
         , produces => ["application/json"]
@@ -48,7 +48,7 @@ trails() ->
         }
      },
   Path = "/newspapers/:name/news",
-  Options = #{path => Path, model => canillita_newsflash},
+  Options = #{path => Path, model => canillita_newsflashes},
   [trails:trail(Path, ?MODULE, Options, Metadata)].
 
 -spec handle_post(Req::cowboy_req:req(), State::state()) ->
@@ -63,7 +63,7 @@ handle_post(Req, State) ->
     {NewspaperName, _Req} = cowboy_req:binding(name, Req),
     case newspaper_exists(NewspaperName) of
       true ->
-        case canillita_newsflash:from_json(NewspaperName, Json) of
+        case canillita_newsflashes:from_json(NewspaperName, Json) of
           {error, Reason} ->
             Req2 = cowboy_req:set_resp_body(sr_json:error(Reason), Req1),
             {false, Req2, State};
@@ -71,7 +71,8 @@ handle_post(Req, State) ->
             handle_post(Entity, Req1, State)
         end;
       false ->
-        cowboy_req:reply(404, Req)
+        cowboy_req:reply(404, Req),
+        {halt, Req, State}
     end
   catch
     _:conflict ->

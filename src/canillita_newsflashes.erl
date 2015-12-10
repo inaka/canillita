@@ -1,11 +1,11 @@
 %%% @doc NewsFlash Model
--module(canillita_newsflash).
+-module(canillita_newsflashes).
 
 -behaviour(sumo_doc).
 -behaviour(sumo_rest_doc).
 
 -type id() :: binary().
--type newspaper_name() :: binary().
+-type newspaper_name() :: canillita_newspapers:name().
 -type title() :: binary().
 -type body() :: binary().
 
@@ -115,7 +115,7 @@ update(NewsFlash, Json) ->
     UpdatedNews = MergedNews#{updated_at := calendar:universal_time()},
     {ok, UpdatedNews}
   catch
-      _:{badkey, Key} -> {error, <<"missing field: ", Key/binary>>}
+    _:{badkey, Key} -> {error, <<"missing field: ", Key/binary>>}
   end.
 
 %% @doc Specify the URI part that uniquely identifies a NewsFlash.

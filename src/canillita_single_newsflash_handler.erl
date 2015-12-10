@@ -41,14 +41,14 @@ trails() ->
      },
   Metadata =
     #{ get =>
-       #{ tags => ["newsflash"]
+       #{ tags => ["newsflashes"]
         , description => "Return a newsflash"
         , produces => ["application/json"]
         , parameters => [NewspaperName, NewsFlashId]
         }
      },
   Path = "/newspapers/:name/news/:id",
-  Options = #{path => Path, model => canillita_newsflash},
+  Options = #{path => Path, model => canillita_newsflashes},
   [trails:trail(Path, ?MODULE, Options, Metadata)].
 
 -spec rest_init( Req::cowboy_req:req(), Options::options()) ->

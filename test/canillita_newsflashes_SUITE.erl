@@ -1,4 +1,4 @@
--module(canillita_newsflash_SUITE).
+-module(canillita_newsflashes_SUITE).
 
 -include_lib("mixer/include/mixer.hrl").
 -mixin([{ canillita_test_utils
@@ -31,7 +31,7 @@ all() -> canillita_test_utils:all(?MODULE).
                        ) -> canillita_test_utils:config().
 init_per_testcase(_TestCase, Config) ->
   _ = sumo:delete_all(canillita_newspapers),
-  _ = sumo:delete_all(canillita_newsflash),
+  _ = sumo:delete_all(canillita_newsflashes),
   Config.
 
 -spec end_per_testcase( TestCase::atom()
