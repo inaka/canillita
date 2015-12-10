@@ -7,14 +7,19 @@
 -mixin([{ sr_entities_handler
         , [ init/3
           , rest_init/2
-          , allowed_methods/2
           , resource_exists/2
+          , allowed_methods/2
+          , announce_req/2
           , content_types_accepted/2
           , content_types_provided/2
           , handle_get/2
           , handle_post/3
           ]
         }]).
+
+%% Aliases
+-type state() :: sr_entities_handler:state().
+%-type options() :: sr_single_entity_handler:options().
 
 -export([trails/0, handle_post/2]).
 
@@ -35,7 +40,7 @@ trails() ->
      },
   Metadata =
     #{ post =>
-       #{ tags => ["newsflashes"]
+       #{ tags => ["newsflash"]
         , description => "Creates a new news flash"
         , consumes => ["application/json"]
         , produces => ["application/json"]
@@ -43,25 +48,30 @@ trails() ->
         }
      },
   Path = "/newspapers/:name/news",
-  Options = #{path => Path, model => canillita_newsflash, verbose => true},
+  Options = #{path => Path, model => canillita_newsflash},
   [trails:trail(Path, ?MODULE, Options, Metadata)].
 
--spec handle_post(cowboy_req:req(), sr_entities_handler:state()) ->
-  {{true, binary()} |
-   false |
-   halt, cowboy_req:req(), sr_entities_handler:state()}.
+-spec handle_post(Req::cowboy_req:req(), State::state()) ->
+  { {true, binary()} | false | halt
+  , cowboy_req:req()
+  , state()
+  }.
 handle_post(Req, State) ->
-  #{opts := #{model := Model}} = State,
   try
     {ok, Body, Req1}      = cowboy_req:body(Req),
     Json                  = sr_json:decode(Body),
     {NewspaperName, _Req} = cowboy_req:binding(name, Req),
-    case Model:from_json(NewspaperName, Json) of
-      {error, Reason} ->
-        Req2 = cowboy_req:set_resp_body(sr_json:error(Reason), Req1),
-        {false, Req2, State};
-      {ok, Entity} ->
-        handle_post(Entity, Req1, State)
+    case newspaper_exists(NewspaperName) of
+      true ->
+        case canillita_newsflash:from_json(NewspaperName, Json) of
+          {error, Reason} ->
+            Req2 = cowboy_req:set_resp_body(sr_json:error(Reason), Req1),
+            {false, Req2, State};
+          {ok, Entity} ->
+            handle_post(Entity, Req1, State)
+        end;
+      false ->
+        cowboy_req:reply(404, Req)
     end
   catch
     _:conflict ->
@@ -73,4 +83,14 @@ handle_post(Req, State) ->
         cowboy_req:set_resp_body(
           sr_json:error(<<"Malformed JSON request">>), Req),
       {false, Req3, State}
+  end.
+
+%% @doc Checks that there is a newspaper with the given name.
+-spec newspaper_exists(NewspaperName::canillita_newspapers:name()) ->
+  boolean().
+newspaper_exists(NewspaperName) ->
+  Conditions = [{name, NewspaperName}],
+  case sumo:find_one(canillita_newspapers, Conditions) of
+    notfound -> false;
+    _Entity -> true
   end.

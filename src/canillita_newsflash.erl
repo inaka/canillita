@@ -44,12 +44,7 @@
 
 %% Public API
 -export(
-  [ new/3
-  , newspaper/1
-  , title/1
-  , body/1
-  , updated_at/1
-  ]).
+  [new/3]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% sumo_doc behaviour callbacks
@@ -95,7 +90,6 @@ from_json(NewspaperName, Json) ->
 -spec from_json(Json::sumo_rest_doc:json()) ->
   {ok, news_flash()} | {error, iodata()}.
 from_json(Json) ->
-  io:format("Json: ~p~n", [Json]),
   Now = sr_json:encode_date(calendar:universal_time()),
   try
     { ok
@@ -143,15 +137,3 @@ new(NewspaperName, Title, Body) ->
    , created_at => Now
    , updated_at => Now
    }.
-
--spec newspaper(NewsFlash::news_flash()) -> newspaper_name().
-newspaper(#{newspaper_name := Newspaper}) -> Newspaper.
-
--spec title(NewsFlash::news_flash()) -> title().
-title(#{title := Title}) -> Title.
-
--spec body(NewsFlash::news_flash()) -> body().
-body(#{body := Body}) -> Body.
-
--spec updated_at(NewsFlash::news_flash()) -> calendar:datetime().
-updated_at(#{updated_at := UpdatedAt}) -> UpdatedAt.
