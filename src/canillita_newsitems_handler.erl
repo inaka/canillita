@@ -17,9 +17,8 @@
           ]
         }]).
 
-%% Aliases
+%% Alias
 -type state() :: sr_entities_handler:state().
-%-type options() :: sr_single_entity_handler:options().
 
 -export([trails/0, handle_post/2]).
 
@@ -61,7 +60,7 @@ handle_post(Req, State) ->
     {ok, Body, Req1}      = cowboy_req:body(Req),
     Json                  = sr_json:decode(Body),
     {NewspaperName, _Req} = cowboy_req:binding(name, Req),
-    case newspaper_exists(NewspaperName) of
+    case canillita_newsitems_repo:newspaper_exists(NewspaperName) of
       true ->
         case canillita_newsitems:from_json(NewspaperName, Json) of
           {error, Reason} ->
@@ -75,23 +74,9 @@ handle_post(Req, State) ->
         {halt, Req, State}
     end
   catch
-    _:conflict ->
-      {ok, Req3} =
-        cowboy_req:reply(409, [], sr_json:error(<<"Duplicated entity">>), Req),
-      {halt, Req3, State};
     _:badjson ->
       Req3 =
         cowboy_req:set_resp_body(
           sr_json:error(<<"Malformed JSON request">>), Req),
       {false, Req3, State}
-  end.
-
-%% @doc Checks that there is a newspaper with the given name.
--spec newspaper_exists(NewspaperName::canillita_newspapers:name()) ->
-  boolean().
-newspaper_exists(NewspaperName) ->
-  Conditions = [{name, NewspaperName}],
-  case sumo:find_one(canillita_newspapers, Conditions) of
-    notfound -> false;
-    _Entity -> true
   end.
