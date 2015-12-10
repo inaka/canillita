@@ -60,7 +60,7 @@ handle_post(Req, State) ->
     {ok, Body, Req1}      = cowboy_req:body(Req),
     Json                  = sr_json:decode(Body),
     {NewspaperName, _Req} = cowboy_req:binding(name, Req),
-    case canillita_newsitems_repo:newspaper_exists(NewspaperName) of
+    case canillita_newspapers_repo:exists(NewspaperName) of
       true ->
         case canillita_newsitems:from_json(NewspaperName, Json) of
           {error, Reason} ->
