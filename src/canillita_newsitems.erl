@@ -1,5 +1,5 @@
-%%% @doc NewsFlash Model
--module(canillita_newsflashes).
+%%% @doc NewsItem Model
+-module(canillita_newsitems).
 
 -behaviour(sumo_doc).
 -behaviour(sumo_rest_doc).
@@ -9,7 +9,7 @@
 -type title() :: binary().
 -type body() :: binary().
 
--opaque news_flash() ::
+-opaque news_item() ::
   #{ id => id() | undefined
    , newspaper_name => newspaper_name()
    , title => title()
@@ -23,7 +23,7 @@
   , newspaper_name/0
   , title/0
   , body/0
-  , news_flash/0]
+  , news_item/0]
   ).
 
 %% sumo_doc behaviour callbacks
@@ -62,33 +62,33 @@ sumo_schema() ->
     , sumo:new_field(updated_at, datetime, [not_null])
     ]).
 
--spec sumo_sleep(NewsFlash::news_flash()) -> sumo:doc().
-sumo_sleep(NewsFlash) -> NewsFlash.
+-spec sumo_sleep(NewsItem::news_item()) -> sumo:doc().
+sumo_sleep(NewsItem) -> NewsItem.
 
--spec sumo_wakeup(NewsFlash::sumo:doc()) -> news_flash().
-sumo_wakeup(NewsFlash) -> NewsFlash.
+-spec sumo_wakeup(NewsItem::sumo:doc()) -> news_item().
+sumo_wakeup(NewsItem) -> NewsItem.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% sumo_rest_doc behaviour callbacks
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
--spec to_json(NewsFlash::news_flash()) -> news_flash().
-to_json(NewsFlash) ->
-  #{ id => sr_json:encode_null(maps:get(id, NewsFlash))
-   , newspaper_name => maps:get(newspaper_name, NewsFlash)
-   , title => maps:get(title, NewsFlash)
-   , body => maps:get(body, NewsFlash)
-   , created_at => sr_json:encode_date(maps:get(created_at, NewsFlash))
-   , updated_at => sr_json:encode_date(maps:get(updated_at, NewsFlash))
+-spec to_json(NewsItem::news_item()) -> news_item().
+to_json(NewsItem) ->
+  #{ id => sr_json:encode_null(maps:get(id, NewsItem))
+   , newspaper_name => maps:get(newspaper_name, NewsItem)
+   , title => maps:get(title, NewsItem)
+   , body => maps:get(body, NewsItem)
+   , created_at => sr_json:encode_date(maps:get(created_at, NewsItem))
+   , updated_at => sr_json:encode_date(maps:get(updated_at, NewsItem))
    }.
 
 -spec from_json(NewspaperName::newspaper_name(), Json::sumo_rest_doc:json()) ->
-  {ok, news_flash()} | {error, iodata()}.
+  {ok, news_item()} | {error, iodata()}.
 from_json(NewspaperName, Json) ->
   from_json(Json#{<<"newspaper_name">> => NewspaperName}).
 
 -spec from_json(Json::sumo_rest_doc:json()) ->
-  {ok, news_flash()} | {error, iodata()}.
+  {ok, news_item()} | {error, iodata()}.
 from_json(Json) ->
   Now = sr_json:encode_date(calendar:universal_time()),
   try
@@ -107,19 +107,19 @@ from_json(Json) ->
     _:{badkey, Key} -> {error, <<"missing field: ", Key/binary>>}
   end.
 
--spec update(NewsFlash::news_flash(), Json::sumo_rest_doc:json()) ->
-  {ok, news_flash()} | {error, iodata()}.
-update(NewsFlash, Json) ->
+-spec update(NewsItem::news_item(), Json::sumo_rest_doc:json()) ->
+  {ok, news_item()} | {error, iodata()}.
+update(NewsItem, Json) ->
   try
-    MergedNews = maps:merge(NewsFlash, Json),
+    MergedNews = maps:merge(NewsItem, Json),
     UpdatedNews = MergedNews#{updated_at := calendar:universal_time()},
     {ok, UpdatedNews}
   catch
     _:{badkey, Key} -> {error, <<"missing field: ", Key/binary>>}
   end.
 
-%% @doc Specify the URI part that uniquely identifies a NewsFlash.
--spec uri_path(NewsFlash::news_flash()) -> id().
+%% @doc Specify the URI part that uniquely identifies a NewsItem.
+-spec uri_path(NewsItem::news_item()) -> id().
 uri_path(#{id := NewsId}) -> NewsId.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -127,7 +127,7 @@ uri_path(#{id := NewsId}) -> NewsId.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 -spec new(NewspaperName::newspaper_name(), Title::title(), Body::body()) ->
-  news_flash().
+  news_item().
 new(NewspaperName, Title, Body) ->
   Now = calendar:universal_time(),
   #{ id => undefined

@@ -1,5 +1,5 @@
 %%% @doc POST /newspapers/:name/news handler.
--module(canillita_newsflashes_handler).
+-module(canillita_newsitems_handler).
 
 -behaviour(trails_handler).
 
@@ -40,15 +40,15 @@ trails() ->
      },
   Metadata =
     #{ post =>
-       #{ tags => ["newsflashes"]
-        , description => "Creates a new news flash"
+       #{ tags => ["newsitems"]
+        , description => "Creates a new news item"
         , consumes => ["application/json"]
         , produces => ["application/json"]
         , parameters => [NewspaperName, RequestBody]
         }
      },
   Path = "/newspapers/:name/news",
-  Options = #{path => Path, model => canillita_newsflashes},
+  Options = #{path => Path, model => canillita_newsitems},
   [trails:trail(Path, ?MODULE, Options, Metadata)].
 
 -spec handle_post(Req::cowboy_req:req(), State::state()) ->
@@ -63,7 +63,7 @@ handle_post(Req, State) ->
     {NewspaperName, _Req} = cowboy_req:binding(name, Req),
     case newspaper_exists(NewspaperName) of
       true ->
-        case canillita_newsflashes:from_json(NewspaperName, Json) of
+        case canillita_newsitems:from_json(NewspaperName, Json) of
           {error, Reason} ->
             Req2 = cowboy_req:set_resp_body(sr_json:error(Reason), Req1),
             {false, Req2, State};

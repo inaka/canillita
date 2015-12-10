@@ -6,8 +6,8 @@
  , canillita_newspapers
  , canillita_newspapers_handler
  , canillita_single_newspaper_handler
- , canillita_newsflashes
- , canillita_newsflashes_handler
- , canillita_single_newsflash_handler
+ , canillita_newsitems
+ , canillita_newsitems_handler
+ , canillita_single_newsitem_handler
  ]
 }.

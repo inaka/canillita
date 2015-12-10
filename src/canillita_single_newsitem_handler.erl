@@ -1,5 +1,5 @@
 %%% @doc GET /newspapers/:name/news/:id handler.
--module(canillita_single_newsflash_handler).
+-module(canillita_single_newsitem_handler).
 
 -behaviour(trails_handler).
 
@@ -32,23 +32,23 @@ trails() ->
      , required => true
      , type => string
      },
-  NewsFlashId =
+  NewsItemId =
     #{ name => id
      , in => path
-     , descripcion => <<"News flash id">>
+     , descripcion => <<"News item id">>
      , required => true
      , type => string
      },
   Metadata =
     #{ get =>
-       #{ tags => ["newsflashes"]
-        , description => "Return a newsflash"
+       #{ tags => ["newsitems"]
+        , description => "Return a newsitem"
         , produces => ["application/json"]
-        , parameters => [NewspaperName, NewsFlashId]
+        , parameters => [NewspaperName, NewsItemId]
         }
      },
   Path = "/newspapers/:name/news/:id",
-  Options = #{path => Path, model => canillita_newsflashes},
+  Options = #{path => Path, model => canillita_newsitems},
   [trails:trail(Path, ?MODULE, Options, Metadata)].
 
 -spec rest_init( Req::cowboy_req:req(), Options::options()) ->
