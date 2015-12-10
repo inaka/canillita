@@ -15,7 +15,6 @@
    , title => title()
    , body => body()
    , created_at => calendar:datetime()
-   , updated_at => calendar:datetime()
    }.
 
 -export_type(
@@ -59,7 +58,6 @@ sumo_schema() ->
     , sumo:new_field(title, string, [not_null])
     , sumo:new_field(body, binary, [not_null])
     , sumo:new_field(created_at, datetime, [not_null])
-    , sumo:new_field(updated_at, datetime, [not_null])
     ]).
 
 -spec sumo_sleep(NewsItem::news_item()) -> sumo:doc().
@@ -79,7 +77,6 @@ to_json(NewsItem) ->
    , title => maps:get(title, NewsItem)
    , body => maps:get(body, NewsItem)
    , created_at => sr_json:encode_date(maps:get(created_at, NewsItem))
-   , updated_at => sr_json:encode_date(maps:get(updated_at, NewsItem))
    }.
 
 -spec from_json(NewspaperName::newspaper_name(), Json::sumo_rest_doc:json()) ->
@@ -99,8 +96,6 @@ from_json(Json) ->
        , body => maps:get(<<"body">>, Json)
        , created_at =>
           sr_json:decode_date(maps:get(<<"created_at">>, Json, Now))
-       , updated_at =>
-          sr_json:decode_date(maps:get(<<"updated_at">>, Json, Now))
        }
     }
   catch
@@ -108,15 +103,8 @@ from_json(Json) ->
   end.
 
 -spec update(NewsItem::news_item(), Json::sumo_rest_doc:json()) ->
-  {ok, news_item()} | {error, iodata()}.
-update(NewsItem, Json) ->
-  try
-    MergedNews = maps:merge(NewsItem, Json),
-    UpdatedNews = MergedNews#{updated_at := calendar:universal_time()},
-    {ok, UpdatedNews}
-  catch
-    _:{badkey, Key} -> {error, <<"missing field: ", Key/binary>>}
-  end.
+  {ok, news_item()}.
+update(NewsItem, _Json) -> {ok, NewsItem}.
 
 %% @doc Specify the URI part that uniquely identifies a NewsItem.
 -spec uri_path(NewsItem::news_item()) -> id().
@@ -129,11 +117,9 @@ uri_path(#{id := NewsId}) -> NewsId.
 -spec new(NewspaperName::newspaper_name(), Title::title(), Body::body()) ->
   news_item().
 new(NewspaperName, Title, Body) ->
-  Now = calendar:universal_time(),
   #{ id => undefined
    , newspaper_name => NewspaperName
    , title => Title
    , body => Body
-   , created_at => Now
-   , updated_at => Now
+   , created_at => calendar:universal_time()
    }.

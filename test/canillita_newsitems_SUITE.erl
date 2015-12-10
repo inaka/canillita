@@ -68,8 +68,7 @@ success_scenario(_Config) ->
    , <<"newspaper_name">> := Newspaper1Bin
    , <<"title">> := <<"title1">>
    , <<"body">> := <<"body1">>
-   , <<"created_at">> := CreatedAt
-   , <<"updated_at">> := CreatedAt
+   , <<"created_at">> := _CreatedAt
    } = sr_json:decode(Body1),
 
   ct:comment("And we can fetch it"),
@@ -90,8 +89,7 @@ success_scenario(_Config) ->
    , <<"newspaper_name">> := Newspaper2Bin
    , <<"title">> := <<"title2">>
    , <<"body">> := <<"body2">>
-   , <<"created_at">> := CreatedAt2
-   , <<"updated_at">> := CreatedAt2
+   , <<"created_at">> := _CreatedAt
    } = sr_json:decode(Body2),
 
   ct:comment("And we can fetch it too"),
