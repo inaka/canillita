@@ -185,13 +185,13 @@ not_found(_Config) ->
 
   ct:comment("Unable to get non-existing newsitem with a valid newspaper"),
   #{status_code := 404} =
-    canillita_test_utils:api_call(get, NewsItem1Url++"/non-existing-id"),
+    canillita_test_utils:api_call(get, NewsItem1Url ++ "/non-existing-id"),
 
   ct:comment("Unable to get existing newsitem id with invalid newspaper"),
   #{status_code := 404} =
     canillita_test_utils:api_call(
       get
-    , "/newspapers/non-existing-newspaper/news/"++NewsItem1Id
+    , "/newspapers/non-existing-newspaper/news/" ++ NewsItem1Id
     ),
 
   {comment, ""}.
