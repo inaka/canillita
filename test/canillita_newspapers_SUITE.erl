@@ -46,7 +46,7 @@ end_per_testcase(_TestCase, Config) ->
 success_scenario(_Config) ->
   Headers = #{<<"content-type">> => <<"application/json; charset=utf-8">>},
 
-  ct:comment("There are no elements"),
+  ct:comment("There are no newspapers"),
   #{status_code := 200, body := Body0} =
     canillita_test_utils:api_call(get, "/newspapers"),
   [] = sr_json:decode(Body0),
@@ -94,7 +94,7 @@ success_scenario(_Config) ->
    } = Newspaper3 = sr_json:decode(Body3),
   true = UpdatedAt >= CreatedAt,
 
-  ct:comment("Still just one element"),
+  ct:comment("Still just one newspaper"),
   #{status_code := 200, body := Body4} =
     canillita_test_utils:api_call(get, "/newspapers"),
   [Newspaper3] = sr_json:decode(Body4),
@@ -125,7 +125,7 @@ success_scenario(_Config) ->
   #{status_code := 204} =
     canillita_test_utils:api_call(delete, "/newspapers/newspaper1"),
 
-  ct:comment("One element again"),
+  ct:comment("One newspaper again"),
   #{status_code := 200, body := Body7} =
     canillita_test_utils:api_call(get, "/newspapers"),
   [Newspaper4] = sr_json:decode(Body7),

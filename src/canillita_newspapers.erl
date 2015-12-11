@@ -52,7 +52,7 @@
 sumo_schema() ->
   sumo:new_schema(
     ?MODULE,
-    [ sumo:new_field(name, string, [id, not_null])
+    [ sumo:new_field(name, string, [id, unique])
     , sumo:new_field(description, string, [not_null])
     , sumo:new_field(created_at, datetime, [not_null])
     , sumo:new_field(updated_at, datetime, [not_null])

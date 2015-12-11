@@ -1,0 +1,125 @@
+%%% @doc NewsItem Model
+-module(canillita_newsitems).
+
+-behaviour(sumo_doc).
+-behaviour(sumo_rest_doc).
+
+-type id() :: binary().
+-type newspaper_name() :: canillita_newspapers:name().
+-type title() :: binary().
+-type body() :: binary().
+
+-opaque news_item() ::
+  #{ id => id() | undefined
+   , newspaper_name => newspaper_name()
+   , title => title()
+   , body => body()
+   , created_at => calendar:datetime()
+   }.
+
+-export_type(
+  [ id/0
+  , newspaper_name/0
+  , title/0
+  , body/0
+  , news_item/0]
+  ).
+
+%% sumo_doc behaviour callbacks
+-export(
+  [ sumo_schema/0
+  , sumo_sleep/1
+  , sumo_wakeup/1
+  ]).
+
+%% sumo_rest_doc behaviour callbacks
+-export(
+  [ to_json/1
+  , from_json/1
+  , from_json/2
+  , update/2
+  , uri_path/1
+  ]).
+
+%% Public API
+-export(
+  [new/3]).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% sumo_doc behaviour callbacks
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+-spec sumo_schema() -> sumo:schema().
+sumo_schema() ->
+  sumo:new_schema(
+    ?MODULE,
+    [ sumo:new_field(id, binary, [id, unique])
+    , sumo:new_field(newspaper_name, string, [not_null])
+    , sumo:new_field(title, string, [not_null])
+    , sumo:new_field(body, binary, [not_null])
+    , sumo:new_field(created_at, datetime, [not_null])
+    ]).
+
+-spec sumo_sleep(NewsItem::news_item()) -> sumo:doc().
+sumo_sleep(NewsItem) -> NewsItem.
+
+-spec sumo_wakeup(NewsItem::sumo:doc()) -> news_item().
+sumo_wakeup(NewsItem) -> NewsItem.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% sumo_rest_doc behaviour callbacks
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+-spec to_json(NewsItem::news_item()) -> news_item().
+to_json(NewsItem) ->
+  #{ id => sr_json:encode_null(maps:get(id, NewsItem))
+   , newspaper_name => maps:get(newspaper_name, NewsItem)
+   , title => maps:get(title, NewsItem)
+   , body => maps:get(body, NewsItem)
+   , created_at => sr_json:encode_date(maps:get(created_at, NewsItem))
+   }.
+
+-spec from_json(NewspaperName::newspaper_name(), Json::sumo_rest_doc:json()) ->
+  {ok, news_item()} | {error, iodata()}.
+from_json(NewspaperName, Json) ->
+  from_json(Json#{<<"newspaper_name">> => NewspaperName}).
+
+-spec from_json(Json::sumo_rest_doc:json()) ->
+  {ok, news_item()} | {error, iodata()}.
+from_json(Json) ->
+  Now = sr_json:encode_date(calendar:universal_time()),
+  try
+    { ok
+    , #{ id => sr_json:decode_null(maps:get(<<"id">>, Json, null))
+       , newspaper_name => maps:get(<<"newspaper_name">>, Json)
+       , title => maps:get(<<"title">>, Json)
+       , body => maps:get(<<"body">>, Json)
+       , created_at =>
+          sr_json:decode_date(maps:get(<<"created_at">>, Json, Now))
+       }
+    }
+  catch
+    _:{badkey, Key} -> {error, <<"missing field: ", Key/binary>>}
+  end.
+
+-spec update(NewsItem::news_item(), Json::sumo_rest_doc:json()) ->
+  {ok, news_item()}.
+update(NewsItem, _Json) -> {ok, NewsItem}.
+
+%% @doc Specify the URI part that uniquely identifies a NewsItem.
+-spec uri_path(NewsItem::news_item()) -> id().
+uri_path(#{id := NewsId}) -> NewsId.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Public API
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+-spec new(NewspaperName::newspaper_name(), Title::title(), Body::body()) ->
+  news_item().
+new(NewspaperName, Title, Body) ->
+  #{ id => undefined
+   , newspaper_name => NewspaperName
+   , title => Title
+   , body => Body
+   , created_at => calendar:universal_time()
+   }.
