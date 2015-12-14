@@ -13,7 +13,13 @@ start() -> {ok, _} = application:ensure_all_started(canillita).
 stop() -> ok = application:stop(canillita).
 
 -spec start(Type::application:start_type(), Args::any()) -> {ok, pid()}.
-start(_Type, _Args) -> {ok, self()}.
+start(_Type, _Args) ->
+  {ok, _Pid} = canillita_sup:start_link(),
+  ok = gen_event:add_handler( canillita_newsitems_events_manager
+                            , canillita_newsitems_events_handler
+                            , []
+                            ),
+  {ok, self()}.
 
 -spec stop(State::[]) -> ok.
 stop(_State) -> ok.
@@ -29,13 +35,15 @@ start_phase(create_schema, _StartType, []) ->
     {error, {Node, {already_exists, Node}}} -> ok
   end,
   {ok, _} = application:ensure_all_started(mnesia),
-  sumo:create_schema();
+  ok = sumo:create_schema(),
+  pg2:create(canillita_listeners);
 start_phase(start_cowboy_listeners, _StartType, []) ->
   Handlers =
     [ canillita_newspapers_handler
     , canillita_single_newspaper_handler
     , canillita_newsitems_handler
     , canillita_single_newsitem_handler
+    , canillita_news_handler
     , cowboy_swagger_handler
     ],
   Routes = trails:trails(Handlers),
