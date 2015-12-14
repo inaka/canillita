@@ -19,7 +19,6 @@
         ]).
 
 -type event () :: {newsitem_created, #{}}.
-
 -type options() :: #{path => string()}.
 -type last_event_id() :: binary() | undefined.
 -type state() :: #{}.
@@ -89,7 +88,7 @@ init(_InitArgs, LastEventId, Req) ->
   ok = pg2:join(canillita_listeners, self()),
   {ok, Req1, News, #{}}.
 
--spec handle_notify(event(), State::state()) -> %lasse_handler:result().
+-spec handle_notify(event(), State::state()) ->
   {send, #{}, state()}.
 handle_notify({newsitem_created, NewsItem}, State) ->
   Event = #{ id => maps:get(id, NewsItem)
