@@ -18,7 +18,13 @@
         , terminate/3
         ]).
 
--type event () :: {newsitem_created, #{}}.
+-type event () ::
+  #{ id => canillita_newsitems:id() | undefined
+   , newspaper_name => canillita_newsitems:newspaper_name()
+   , title => canillita_newsitems:title()
+   , body => canillita_newsitems:body()
+   , created_at => calendar:datetime()
+   }.
 -type options() :: #{path => string()}.
 -type last_event_id() :: binary() | undefined.
 -type state() :: #{}.
@@ -74,30 +80,16 @@ notify(Event) ->
   {ok, cowboy_req:req(), [lasse_handler:event()], state()}.
 init(_InitArgs, LastEventId, Req) ->
   Req1 = sr_entities_handler:announce_req(Req, #{}),
-  NewsItems = case LastEventId of
-    undefined ->
-      canillita_newsitems_repo:fetch_all();
-    LastEventId ->
-      #{created_at := CreatedAt} = canillita_newsitems_repo:fetch(LastEventId),
-      canillita_newsitems_repo:fetch_all(CreatedAt)
-  end,
-  News = [ #{id => Id, event => Event, data => Title, data => Body} ||
-           #{id := Id, newspaper_name := Event, title := Title, body := Body} <-
-           NewsItems
-         ],
+  NewsItems = canillita_newsitems_repo:fetch_since(LastEventId),
+  News = [canillita_newsitems:to_sse(NewsItem) || NewsItem <- NewsItems],
   ok = pg2:join(canillita_listeners, self()),
   {ok, Req1, News, #{}}.
 
--spec handle_notify(event(), State::state()) ->
-  {send, #{}, state()}.
-handle_notify({newsitem_created, NewsItem}, State) ->
-  Event = #{ id => maps:get(id, NewsItem)
-           , event => maps:get(newspaper_name, NewsItem)
-           , data => iolist_to_binary([ maps:get(title, NewsItem)
-                                      , "\n"
-                                      , maps:get(body, NewsItem)
-                                      ])
-           },
+-spec handle_notify( NewsItem::canillita_newsitems:news_item()
+                   , State::state()
+                   ) -> {send, canillita_newsitems:sse_event(), state()}.
+handle_notify(NewsItem, State) ->
+  Event = canillita_newsitems:to_sse(NewsItem),
   {send, Event, State}.
 
 -spec handle_info(Info::any(), State::state()) -> lasse_handler:result().

@@ -23,7 +23,7 @@ handle_call(_Request, State) ->
   {ok, not_implemented, State}.
 
 handle_event({canillita_newsitems, created, [Entity]}, State) ->
-  canillita_news_handler:notify({newsitem_created, Entity}),
+  canillita_news_handler:notify(Entity),
   {ok, State};
 handle_event(_Event, State) ->
   {ok, State}.

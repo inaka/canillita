@@ -32,7 +32,7 @@
   [ to_json/1
   , from_json/1
   , update/2
-  , uri_path/1
+  , location/2
   , id/1
   ]).
 
@@ -108,8 +108,8 @@ update(Newspaper, Json) ->
   end.
 
 %% @doc Specify the uri part that uniquely identifies a Newspaper.
--spec uri_path(Newspaper::newspaper()) -> name().
-uri_path(Newspaper) -> name(Newspaper).
+-spec location(Newspaper::newspaper(), Path::sumo_rest_doc:path()) -> iodata().
+location(Newspaper, Path) -> iolist_to_binary([Path, name(Newspaper)]).
 
 %% @doc Optional callback id/1 to let sumo_rest avoid duplicated keys (and
 %%      return `409 Conflict` in that case).

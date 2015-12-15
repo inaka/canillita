@@ -65,8 +65,12 @@ api_call(Method, Uri, Headers, Body) ->
 -spec async_api_call(Uri::uri(), Headers::headers()) -> pid().
 async_api_call(Uri, Headers) ->
   {ok, Pid} = shotgun:open("localhost", 4892),
-  Options = #{async => true, async_mode => sse},
-  {ok, _Ref} = shotgun:get(Pid, Uri, Headers, Options),
+  {ok, _} = try
+    Options = #{async => true, async_mode => sse},
+    {ok, _Ref} = shotgun:get(Pid, Uri, Headers, Options)
+  catch
+    _:Exception -> throw({error, Exception})
+  end,
   Pid.
 
 -spec create_newspaper( Name::canillita_newspapers:name()
