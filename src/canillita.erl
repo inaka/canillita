@@ -15,10 +15,6 @@ stop() -> ok = application:stop(canillita).
 -spec start(Type::application:start_type(), Args::any()) -> {ok, pid()}.
 start(_Type, _Args) ->
   {ok, _Pid} = canillita_sup:start_link(),
-  ok = gen_event:add_handler( canillita_newsitems_events_manager
-                            , canillita_newsitems_events_handler
-                            , []
-                            ),
   {ok, self()}.
 
 -spec stop(State::[]) -> ok.
@@ -35,8 +31,7 @@ start_phase(create_schema, _StartType, []) ->
     {error, {Node, {already_exists, Node}}} -> ok
   end,
   {ok, _} = application:ensure_all_started(mnesia),
-  ok = sumo:create_schema(),
-  pg2:create(canillita_listeners);
+  sumo:create_schema();
 start_phase(start_cowboy_listeners, _StartType, []) ->
   Handlers =
     [ canillita_newspapers_handler
@@ -54,4 +49,10 @@ start_phase(start_cowboy_listeners, _StartType, []) ->
   case cowboy:start_http(canillita_server, 1, TransOpts, ProtoOpts) of
     {ok, _} -> ok;
     {error, {already_started, _}} -> ok
-  end.
+  end;
+start_phase(start_canillita_events_management, _StartType, []) ->
+  ok = gen_event:add_handler( canillita_newsitems_events_manager
+                            , canillita_newsitems_events_handler
+                            , []
+                            ),
+  pg2:create(canillita_listeners).

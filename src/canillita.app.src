@@ -13,5 +13,9 @@
   ]},
   {mod, {canillita, []}},
   {env, []},
-  {start_phases , [{create_schema, []}, {start_cowboy_listeners, []}]}
+  {start_phases , [
+    {create_schema, []},
+    {start_cowboy_listeners, []},
+    {start_canillita_events_management, []}
+  ]}
 ]}.
