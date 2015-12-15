@@ -1,7 +1,7 @@
 %%% @doc NewsItems repository
 -module(canillita_newsitems_repo).
 
--export([fetch/1, fetch/2, fetch_all/0, fetch_all/1]).
+-export([fetch/1, fetch/2, fetch_since/1]).
 
 -define(TABLE, canillita_newsitems).
 
@@ -18,6 +18,20 @@ fetch(Id) ->
 fetch(NewspaperName, Id) ->
   Conditions = [{id, Id}, {newspaper_name, NewspaperName}],
   sumo:find_one(?TABLE, Conditions).
+
+%% @doc returns all the news after the given event-id or all the news
+%%      if not event-id provided.
+-spec fetch_since(CreatedAt::calendar:datetime()  | undefined) ->
+  [sumo_rest_doc:entity()].
+fetch_since(undefined) ->
+  fetch_all();
+fetch_since(LastEventId) ->
+  #{created_at := CreatedAt} = fetch(LastEventId),
+  fetch_all(CreatedAt).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% internal
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% @doc returns all the newsitems stored so far.
 -spec fetch_all() -> [sumo_rest_doc:entity()].
