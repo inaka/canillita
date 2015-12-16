@@ -9,6 +9,7 @@
         , api_call/3
         , api_call/4
         ]).
+-export([async_api_call/2, create_newspaper/2, create_newsitem/3]).
 
 -type config() :: proplists:proplist().
 -export_type([config/0]).
@@ -60,3 +61,44 @@ api_call(Method, Uri, Headers, Body) ->
   after
     shotgun:close(Pid)
   end.
+
+-spec async_api_call(Uri::uri(), Headers::headers()) -> pid().
+async_api_call(Uri, Headers) ->
+  {ok, Pid} = shotgun:open("localhost", 4892),
+  {ok, _} = try
+    Options = #{async => true, async_mode => sse},
+    {ok, _Ref} = shotgun:get(Pid, Uri, Headers, Options)
+  catch
+    _:Exception -> throw({error, Exception})
+  end,
+  Pid.
+
+-spec create_newspaper( Name::canillita_newspapers:name()
+                      , Description::canillita_newspapers:description()
+                      ) -> iodata().
+create_newspaper(Name, Description) ->
+  Headers = #{<<"content-type">> => <<"application/json; charset=utf-8">>},
+  #{status_code := 201, body := NewspaperBody} =
+    api_call(
+      post
+    , "/newspapers"
+    , Headers
+    , #{ name => Name
+       , description => Description
+       }
+    ),
+  Newspaper = sr_json:decode(NewspaperBody),
+  Name = maps:get(<<"name">>, Newspaper),
+  binary_to_list(Name).
+
+-spec create_newsitem( Newspaper::string()
+                     , Headers::headers()
+                     , Body::body()
+                     ) -> map().
+create_newsitem(Newspaper, Headers, Body) ->
+  api_call(
+    post
+  , "/newspapers/" ++ Newspaper ++ "/news"
+  , Headers
+  , Body
+  ).

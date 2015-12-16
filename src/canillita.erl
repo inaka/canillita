@@ -13,7 +13,7 @@ start() -> {ok, _} = application:ensure_all_started(canillita).
 stop() -> ok = application:stop(canillita).
 
 -spec start(Type::application:start_type(), Args::any()) -> {ok, pid()}.
-start(_Type, _Args) -> {ok, self()}.
+start(_Type, _Args) -> canillita_sup:start_link().
 
 -spec stop(State::[]) -> ok.
 stop(_State) -> ok.
@@ -36,6 +36,7 @@ start_phase(start_cowboy_listeners, _StartType, []) ->
     , canillita_single_newspaper_handler
     , canillita_newsitems_handler
     , canillita_single_newsitem_handler
+    , canillita_news_handler
     , cowboy_swagger_handler
     ],
   Routes = trails:trails(Handlers),
@@ -46,4 +47,10 @@ start_phase(start_cowboy_listeners, _StartType, []) ->
   case cowboy:start_http(canillita_server, 1, TransOpts, ProtoOpts) of
     {ok, _} -> ok;
     {error, {already_started, _}} -> ok
-  end.
+  end;
+start_phase(start_canillita_events_management, _StartType, []) ->
+  ok = gen_event:add_handler( canillita_newsitems_events_manager
+                            , canillita_newsitems_events_handler
+                            , []
+                            ),
+  pg2:create(canillita_listeners).

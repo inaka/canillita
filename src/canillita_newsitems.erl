@@ -22,8 +22,8 @@
   , newspaper_name/0
   , title/0
   , body/0
-  , news_item/0]
-  ).
+  , news_item/0
+  ]).
 
 %% sumo_doc behaviour callbacks
 -export(
@@ -38,12 +38,11 @@
   , from_json/1
   , from_json/2
   , update/2
-  , uri_path/1
+  , location/2
   ]).
 
 %% Public API
--export(
-  [new/3]).
+-export([new/3, to_sse/1]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% sumo_doc behaviour callbacks
@@ -106,9 +105,10 @@ from_json(Json) ->
   {ok, news_item()}.
 update(NewsItem, _Json) -> {ok, NewsItem}.
 
-%% @doc Specify the URI part that uniquely identifies a NewsItem.
--spec uri_path(NewsItem::news_item()) -> id().
-uri_path(#{id := NewsId}) -> NewsId.
+%% @doc Specify the URL that identifies a NewsItem.
+-spec location(NewsItem::news_item(), Path::sumo_rest_doc:path()) -> iodata().
+location(#{id := NewsId, newspaper_name := NewspaperName}, _Path) ->
+  iolist_to_binary(["/newspapers/", NewspaperName, "/news/", NewsId]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Public API
@@ -122,4 +122,14 @@ new(NewspaperName, Title, Body) ->
    , title => Title
    , body => Body
    , created_at => calendar:universal_time()
+   }.
+
+-spec to_sse(NewsItem::news_item()) -> lasse_handler:event().
+to_sse(NewsItem) ->
+  #{ id => maps:get(id, NewsItem)
+   , event => maps:get(newspaper_name, NewsItem)
+   , data => iolist_to_binary([ maps:get(title, NewsItem)
+                              , "\n"
+                              , maps:get(body, NewsItem)
+                              ])
    }.
