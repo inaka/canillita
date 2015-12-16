@@ -13,10 +13,15 @@ start() -> {ok, _} = application:ensure_all_started(canillita).
 stop() -> ok = application:stop(canillita).
 
 -spec start(Type::application:start_type(), Args::any()) -> {ok, pid()}.
-start(_Type, _Args) -> canillita_sup:start_link().
+start(_Type, _Args) -> {ok, self()}.
 
 -spec stop(State::[]) -> ok.
-stop(_State) -> ok.
+stop(_State) ->
+  gen_event:delete_handler( canillita_newsitems_events_manager
+                          , canillita_newsitems_events_handler
+                          , []
+                          ),
+  ok.
 
 %% @private
 -spec start_phase(atom(), StartType::application:start_type(), []) ->
