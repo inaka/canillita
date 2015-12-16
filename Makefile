@@ -15,7 +15,7 @@ dep_katana = git https://github.com/inaka/erlang-katana.git 07efe94
 dep_shotgun = git https://github.com/inaka/shotgun.git 0.1.12
 dep_mixer = git https://github.com/inaka/mixer.git 0.1.4
 dep_swagger = git https://github.com/inaka/cowboy-swagger.git 0.1.0
-dep_sumo_db = git https://github.com/inaka/sumo_db.git 3fbcedb
+dep_sumo_db = git https://github.com/inaka/sumo_db.git f8a3689
 dep_trails = git https://github.com/inaka/cowboy-trails.git 0.1.0
 dep_lager = git https://github.com/basho/lager.git 3.0.2
 
