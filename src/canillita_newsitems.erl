@@ -17,13 +17,6 @@
    , created_at => calendar:datetime()
    }.
 
--type sse_event() ::
-  #{ id => id()
-   , event => newspaper_name()
-   , data => binary()
-   }.
--export_type([sse_event/0]).
-
 -export_type(
   [ id/0
   , newspaper_name/0
@@ -131,7 +124,7 @@ new(NewspaperName, Title, Body) ->
    , created_at => calendar:universal_time()
    }.
 
--spec to_sse(NewsItem::news_item()) -> sse_event().
+-spec to_sse(NewsItem::news_item()) -> lasse_handler:event().
 to_sse(NewsItem) ->
   #{ id => maps:get(id, NewsItem)
    , event => maps:get(newspaper_name, NewsItem)

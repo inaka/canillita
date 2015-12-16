@@ -18,13 +18,6 @@
         , terminate/3
         ]).
 
--type event () ::
-  #{ id => canillita_newsitems:id() | undefined
-   , newspaper_name => canillita_newsitems:newspaper_name()
-   , title => canillita_newsitems:title()
-   , body => canillita_newsitems:body()
-   , created_at => calendar:datetime()
-   }.
 -type options() :: #{path => string()}.
 -type last_event_id() :: binary() | undefined.
 -type state() :: #{}.
@@ -60,7 +53,7 @@ trails() ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% @doc sends an event to all the listeners
--spec notify(Event::event()) -> ok.
+-spec notify(Event::canillita_newsitems:news_item()) -> ok.
 notify(Event) ->
   lists:foreach(
     fun(Listener) ->
@@ -87,7 +80,7 @@ init(_InitArgs, LastEventId, Req) ->
 
 -spec handle_notify( NewsItem::canillita_newsitems:news_item()
                    , State::state()
-                   ) -> {send, canillita_newsitems:sse_event(), state()}.
+                   ) -> {send, lasse_handler:event(), state()}.
 handle_notify(NewsItem, State) ->
   Event = canillita_newsitems:to_sse(NewsItem),
   {send, Event, State}.
