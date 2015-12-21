@@ -58,9 +58,13 @@ sumo_schema() ->
     , sumo:new_field(updated_at, datetime, [not_null])
     ]).
 
+%% @doc Convert a newspaper from its system representation to sumo's
+%%      internal one.
 -spec sumo_sleep(Newspaper::newspaper()) -> sumo:doc().
 sumo_sleep(Newspaper) -> Newspaper.
 
+%% @doc Convert a newspaper from sumo's internal representation to its
+%%      system one.
 -spec sumo_wakeup(Newspaper::sumo:doc()) -> newspaper().
 sumo_wakeup(Newspaper) -> Newspaper.
 
@@ -68,6 +72,7 @@ sumo_wakeup(Newspaper) -> Newspaper.
 %% sumo_rest_doc behaviour callbacks
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%% @doc Convert a newspaper from its system representation to json.
 -spec to_json(Newspaper::newspaper()) -> newspaper().
 to_json(Newspaper) ->
   #{ name         => maps:get(name, Newspaper)
@@ -76,6 +81,7 @@ to_json(Newspaper) ->
    , updated_at   => sr_json:encode_date(maps:get(updated_at, Newspaper))
    }.
 
+%% @doc Convert a newspaper from json to its system representation.
 -spec from_json(Json::sumo_rest_doc:json()) ->
   {ok, newspaper()} | {error, iodata()}.
 from_json(Json) ->

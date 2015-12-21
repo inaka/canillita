@@ -59,9 +59,13 @@ sumo_schema() ->
     , sumo:new_field(created_at, datetime, [not_null])
     ]).
 
+%% @doc Convert a newspaper from its system representation to sumo's
+%%      internal one.
 -spec sumo_sleep(NewsItem::news_item()) -> sumo:doc().
 sumo_sleep(NewsItem) -> NewsItem.
 
+%% @doc Convert a newspaper from sumo's internal representation to its
+%%      system one.
 -spec sumo_wakeup(NewsItem::sumo:doc()) -> news_item().
 sumo_wakeup(NewsItem) -> NewsItem.
 
@@ -69,6 +73,7 @@ sumo_wakeup(NewsItem) -> NewsItem.
 %% sumo_rest_doc behaviour callbacks
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%% @doc Convert a newspaper from its system representation to json.
 -spec to_json(NewsItem::news_item()) -> news_item().
 to_json(NewsItem) ->
   #{ id => sr_json:encode_null(maps:get(id, NewsItem))
@@ -78,6 +83,7 @@ to_json(NewsItem) ->
    , created_at => sr_json:encode_date(maps:get(created_at, NewsItem))
    }.
 
+%% @doc Convert a newspaper from json to its system representation.
 -spec from_json(NewspaperName::newspaper_name(), Json::sumo_rest_doc:json()) ->
   {ok, news_item()} | {error, iodata()}.
 from_json(NewspaperName, Json) ->
@@ -124,6 +130,7 @@ new(NewspaperName, Title, Body) ->
    , created_at => calendar:universal_time()
    }.
 
+%% @doc Convert a newspaper from its system representation to SSE.
 -spec to_sse(NewsItem::news_item()) -> lasse_handler:event().
 to_sse(NewsItem) ->
   #{ id => maps:get(id, NewsItem)
