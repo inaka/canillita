@@ -66,6 +66,9 @@ notify(Event) ->
 %% lasse_handler callbacks
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%% @doc Will be called upon initialization of the handler, receiving the
+%%      value of the "last-event-id" header if there is one or
+%%      `undefined` otherwise.
 -spec init( InitArgs::options()
           , LastEventId::last_event_id()
           , Req::cowboy_req:req()
@@ -78,6 +81,8 @@ init(_InitArgs, LastEventId, Req) ->
   ok = pg2:join(canillita_listeners, self()),
   {ok, Req1, News, #{}}.
 
+%% @doc Receives and processes in-band messages sent through the
+%%      lasse_handler:notify/2 function.
 -spec handle_notify( NewsItem::canillita_newsitems:news_item()
                    , State::state()
                    ) -> {send, lasse_handler:event(), state()}.
@@ -85,11 +90,15 @@ handle_notify(NewsItem, State) ->
   Event = canillita_newsitems:to_sse(NewsItem),
   {send, Event, State}.
 
+%% @doc Receives and processes out-of-band messages sent directly to the
+%%      handler's process.
 -spec handle_info(Info::any(), State::state()) -> lasse_handler:result().
 handle_info(Info, State) ->
   _ = lager:notice("~p received at ~p", [Info, State]),
   {nosend, State}.
 
+%% @doc If there's a problem while sending a chunk to the client, this
+%%      function will be called after which the handler will terminate.
 -spec handle_error( Event::lasse_handler:event()
                   , Error::term()
                   , State::state()
@@ -98,6 +107,8 @@ handle_error(Event, Error, State) ->
   _ = lager:warning("Couldn't send ~p in ~p: ~p", [Event, State, Error]),
   State.
 
+%% @doc This function will be called before terminating the handler, its
+%%      return value is ignored.
 -spec terminate(Reason::any(), Req::cowboy_req:req(), State::state()) -> ok.
 terminate(Reason, _Req, _State) ->
   _ = lager:notice("Terminating news: ~p", [Reason]),
