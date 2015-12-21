@@ -10,6 +10,9 @@ This is canillita **v2**, if you're looking for **v1** switch to branch [v1](htt
 ### Introduction
 **Canillita** is a RESTful API that allow us to manage `news` by `newspaper` and every time a `news item` is created it gets notified to the listeners.
 
+### Tests
+You can run the tests executing `make tests` in the root folder of the app.
+
 ### The Server
 In order to execute this application you need to execute the following commands:
 
