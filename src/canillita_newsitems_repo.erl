@@ -1,12 +1,7 @@
 %%% @doc NewsItems repository
 -module(canillita_newsitems_repo).
 
--export([fetch/1, fetch/2, fetch_since/1]).
-
-%% @doc returns the newsitem identified with the given id.
--spec fetch(Id::canillita_newsitems:id()) -> notfound | sumo_rest_doc:entity().
-fetch(Id) ->
-  sumo:find(canillita_newsitems, Id).
+-export([fetch/2, fetch_since/1]).
 
 %% @doc Returns the newsitem that matches the given
 %%      newspaper_name and id (if any).
@@ -19,7 +14,7 @@ fetch(NewspaperName, Id) ->
 
 %% @doc returns all the news after the given event-id or all the news
 %%      if not event-id provided.
--spec fetch_since(CreatedAt::calendar:datetime()  | undefined) ->
+-spec fetch_since(LastEventId::canillita_newsitems:id()  | undefined) ->
   [sumo_rest_doc:entity()].
 fetch_since(undefined) ->
   fetch_all();
@@ -30,6 +25,11 @@ fetch_since(LastEventId) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% internal
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% @doc returns the newsitem identified with the given id.
+-spec fetch(Id::canillita_newsitems:id()) -> notfound | sumo_rest_doc:entity().
+fetch(Id) ->
+  sumo:find(canillita_newsitems, Id).
 
 %% @doc returns all the newsitems stored so far.
 -spec fetch_all() -> [sumo_rest_doc:entity()].
