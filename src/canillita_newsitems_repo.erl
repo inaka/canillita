@@ -19,7 +19,7 @@ fetch(NewspaperName, Id) ->
 
 %% @doc returns all the news after the given event-id or all the news
 %%      if not event-id provided.
--spec fetch_since(CreatedAt::calendar:datetime()  | undefined) ->
+-spec fetch_since(LastEventId::canillita_newsitems:id()  | undefined) ->
   [sumo_rest_doc:entity()].
 fetch_since(undefined) ->
   fetch_all();
