@@ -8,13 +8,13 @@ You can find a blog post about this app somewhere in [Inaka's Blog](http://inaka
 This is canillita **v2**, if you're looking for **v1** switch to branch [v1](https://github.com/inaka/canillita/tree/v1) or tag [1.0](https://github.com/inaka/canillita/tree/1.0) :)
 
 ### Introduction
-**Canillita** is a RESTful API that allow us to manage `news` by `newspaper` and every time a `news item` is created it gets notified to the listeners.
+**Canillita** provides a RESTful API that allow us to manage `news` by `newspaper` and every time a `news item` is published, the listeners get a notification with it.
 
 ### Tests
 You can run the tests executing `make tests` in the root folder of the app.
 
 ### The Server
-In order to execute this application you need to execute the following commands:
+In order to run this application you need to execute the following commands:
 
 ```
 # Start Erlang shell for this project
