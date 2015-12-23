@@ -17,14 +17,10 @@ You can run the tests executing `make tests` in the root folder of the app.
 In order to run this application you need to execute the following commands:
 
 ```
-# Start Erlang shell for this project
-$ make shell
-# Erlang shell started
-Erlang/OTP 18 [erts-7.1] [source] [64-bit] [smp:4:4] [async-threads:10] [kernel-poll:false]
-
-Eshell V7.1  (abort with ^G)
-1> application:ensure_all_started(canillita).
-2>
+# Create release
+$ make rel
+# Run server
+$ _rel/canillita/bin/canillita console
 ```
 After that you're just good to go.
 
