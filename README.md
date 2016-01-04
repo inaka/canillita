@@ -2,7 +2,7 @@
 
 Simple Paperboy-themed PubSub on top of REST+SSE.
 
-You can find a blog post about this app somewhere in [Inaka's Blog](http://inaka.net/blog) :)
+You can find a blog post about this app in our [Inaka's Blog](http://inaka.net/blog/2016/01/04/canillita-your-first-erlang-web-server-V2/) :)
 
 ## :warning: DISCLAIMER :warning:
 This is canillita **v2**, if you're looking for **v1** switch to branch [v1](https://github.com/inaka/canillita/tree/v1) or tag [1.0](https://github.com/inaka/canillita/tree/1.0) :)
