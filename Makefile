@@ -8,7 +8,7 @@ TEST_DEPS = shotgun mixer
 LOCAL_DEPS = tools compiler syntax_tools common_test inets test_server
 LOCAL_DEPS += dialyzer wx
 
-dep_sumo_rest = git https://github.com/inaka/sumo_rest.git 0.1.1
+dep_sumo_rest = git https://github.com/inaka/sumo_rest.git 0.1.2
 dep_lasse = git https://github.com/inaka/lasse.git 1.0.1
 dep_sync = git https://github.com/rustyio/sync.git 9c78e7b
 dep_katana = git https://github.com/inaka/erlang-katana.git 07efe94
