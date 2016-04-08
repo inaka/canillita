@@ -94,7 +94,7 @@ handle_notify(NewsItem, State) ->
 %%      handler's process.
 -spec handle_info(Info::any(), State::state()) -> lasse_handler:result().
 handle_info(Info, State) ->
-  _ = lager:notice("~p received at ~p", [Info, State]),
+  error_logger:info_msg("~p received at ~p", [Info, State]),
   {nosend, State}.
 
 %% @doc If there's a problem while sending a chunk to the client, this
@@ -104,12 +104,13 @@ handle_info(Info, State) ->
                   , State::state()
                   ) -> state().
 handle_error(Event, Error, State) ->
-  _ = lager:warning("Couldn't send ~p in ~p: ~p", [Event, State, Error]),
+  error_logger:warning_msg(
+    "Couldn't send ~p in ~p: ~p", [Event, State, Error]),
   State.
 
 %% @doc This function will be called before terminating the handler, its
 %%      return value is ignored.
 -spec terminate(Reason::any(), Req::cowboy_req:req(), State::state()) -> ok.
 terminate(Reason, _Req, _State) ->
-  _ = lager:notice("Terminating news: ~p", [Reason]),
+  error_logger:info_msg("Terminating news: ~p", [Reason]),
   ok.
