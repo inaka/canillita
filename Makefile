@@ -2,9 +2,9 @@ PROJECT = canillita
 
 CONFIG ?= test/test.config
 
-DEPS = sumo_rest lasse katana swagger sumo_db trails
+DEPS = sumo_rest mixer lasse katana swagger sumo_db trails
 SHELL_DEPS = sync lager
-TEST_DEPS = shotgun mixer katana_test
+TEST_DEPS = shotgun katana_test
 BUILD_DEPS = inaka_mk
 LOCAL_DEPS = tools compiler syntax_tools common_test inets test_server
 LOCAL_DEPS += dialyzer wx
