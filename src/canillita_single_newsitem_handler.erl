@@ -8,7 +8,6 @@
         , [ init/3
           , rest_init/2
           , allowed_methods/2
-          , content_types_accepted/2
           , content_types_provided/2
           , handle_get/2
           ]

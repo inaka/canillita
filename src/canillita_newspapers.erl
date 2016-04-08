@@ -40,8 +40,6 @@
 -export(
   [ new/2
   , name/1
-  , description/1
-  , updated_at/1
   ]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -137,9 +135,3 @@ new(Name, Description) ->
 
 -spec name(Newspaper::newspaper()) -> name().
 name(#{name := Name}) -> Name.
-
--spec description(Newspaper::newspaper()) -> description().
-description(#{description := Description}) -> Description.
-
--spec updated_at(Newspaper::newspaper()) -> calendar:datetime().
-updated_at(#{updated_at := UpdatedAt}) -> UpdatedAt.
