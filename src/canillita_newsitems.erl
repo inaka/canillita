@@ -42,7 +42,7 @@
   ]).
 
 %% Public API
--export([new/3, to_sse/1]).
+-export([to_sse/1]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% sumo_doc behaviour callbacks
@@ -119,16 +119,6 @@ location(#{id := NewsId, newspaper_name := NewspaperName}, _Path) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Public API
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
--spec new(NewspaperName::newspaper_name(), Title::title(), Body::body()) ->
-  news_item().
-new(NewspaperName, Title, Body) ->
-  #{ id => undefined
-   , newspaper_name => NewspaperName
-   , title => Title
-   , body => Body
-   , created_at => calendar:universal_time()
-   }.
 
 %% @doc Convert a newspaper from its system representation to SSE.
 -spec to_sse(NewsItem::news_item()) -> lasse_handler:event().

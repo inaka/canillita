@@ -12,7 +12,6 @@
           , announce_req/2
           , content_types_accepted/2
           , content_types_provided/2
-          , handle_get/2
           , handle_post/3
           ]
         }]).
