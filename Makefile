@@ -3,7 +3,7 @@ PROJECT = canillita
 CONFIG ?= test/test.config
 
 DEPS = sumo_rest lasse katana swagger sumo_db trails
-SHELL_DEPS = sync
+SHELL_DEPS = sync lager
 TEST_DEPS = shotgun mixer katana_test
 BUILD_DEPS = inaka_mk
 LOCAL_DEPS = tools compiler syntax_tools common_test inets test_server
@@ -12,6 +12,7 @@ LOCAL_DEPS += dialyzer wx
 dep_sumo_rest = git https://github.com/inaka/sumo_rest.git 0.1.2
 dep_lasse = git https://github.com/inaka/lasse.git 1.0.1
 dep_sync = git https://github.com/rustyio/sync.git 9c78e7b
+dep_lager = git https://github.com/basho/lager.git 3.1.0
 dep_katana = git https://github.com/inaka/erlang-katana.git 0.2.23
 dep_shotgun = git https://github.com/inaka/shotgun.git 0.2.3
 dep_mixer = git https://github.com/inaka/mixer.git 0.1.5
