@@ -58,7 +58,7 @@ success_scenario(_Config) ->
   #{status_code := 201, body := Body1} =
     canillita_test_utils:api_call(
       post
-    , "/newspapers/"++Newspaper1++"/news"
+    , "/newspapers/" ++ Newspaper1 ++ "/news"
     , Headers
     , #{ <<"title">> => <<"title1">>
        , <<"body">> => <<"body1">>
@@ -72,14 +72,14 @@ success_scenario(_Config) ->
    } = sr_json:decode(Body1),
 
   ct:comment("And we can fetch it"),
-  NewsItem1Url = "/newspapers/"++Newspaper1++"/news/"++NewsItem1Id,
+  NewsItem1Url = "/newspapers/" ++ Newspaper1 ++ "/news/" ++ NewsItem1Id,
   #{status_code := 200} = canillita_test_utils:api_call(get, NewsItem1Url),
 
   ct:comment("Create a new newsitem"),
   #{status_code := 201, body := Body2} =
     canillita_test_utils:api_call(
       post
-    , "/newspapers/"++Newspaper2++"/news"
+    , "/newspapers/" ++ Newspaper2 ++ "/news"
     , Headers
     , #{ <<"title">> => <<"title2">>
        , <<"body">> => <<"body2">>
@@ -93,7 +93,7 @@ success_scenario(_Config) ->
    } = sr_json:decode(Body2),
 
   ct:comment("And we can fetch it too"),
-  NewsItem2Url = "/newspapers/"++Newspaper2++"/news/"++NewsItem2Id,
+  NewsItem2Url = "/newspapers/" ++ Newspaper2 ++ "/news/" ++ NewsItem2Id,
   #{status_code := 200} = canillita_test_utils:api_call(get, NewsItem2Url),
 
   {comment, ""}.
@@ -107,7 +107,7 @@ invalid_headers(_Config) ->
                    , <<"accept">> => <<"text/html">>
                    },
   Newspaper1 = create_newspaper(<<"newspaper1">>, <<"description1">>),
-  NewsItem1Url = "/newspapers/"++Newspaper1++"/news",
+  NewsItem1Url = "/newspapers/" ++ Newspaper1 ++ "/news",
   ct:comment("content-type must be provided for POST"),
   #{status_code := 415} =
     canillita_test_utils:api_call(post, NewsItem1Url, NoHeaders, <<>>),
@@ -127,7 +127,7 @@ invalid_headers(_Config) ->
 invalid_parameters(_Config) ->
   Headers = #{<<"content-type">> => <<"application/json">>},
   Newspaper1 = create_newspaper(<<"newspaper1">>, <<"description1">>),
-  NewsItem1Url = "/newspapers/"++Newspaper1++"/news",
+  NewsItem1Url = "/newspapers/" ++ Newspaper1 ++ "/news",
 
   ct:comment("Empty or broken parameters are reported"),
   #{status_code := 400} =
@@ -164,34 +164,34 @@ not_found(_Config) ->
 
   Newspaper1 = create_newspaper(<<"newspaper1">>, <<"description1">>),
   Newspaper1Bin = list_to_binary(Newspaper1),
-  NewsItem1Url = "/newspapers/"++Newspaper1++"/news",
+  NewsItem1Url = "/newspapers/" ++ Newspaper1 ++ "/news",
 
   ct:comment("Create a newsitem"),
   #{status_code := 201, body := Body1} =
     canillita_test_utils:api_call(
       post
-    , "/newspapers/"++Newspaper1++"/news"
+    , "/newspapers/" ++ Newspaper1 ++ "/news"
     , Headers
-    , #{ <<"title">> => <<"title1">>
-       , <<"body">> => <<"body1">>
+    , #{ <<"title">> => <<"titlenf1">>
+       , <<"body">> => <<"bodynf1">>
        }
     ),
   #{ <<"id">> := NewsItem1Id
    , <<"newspaper_name">> := Newspaper1Bin
-   , <<"title">> := <<"title1">>
-   , <<"body">> := <<"body1">>
+   , <<"title">> := <<"titlenf1">>
+   , <<"body">> := <<"bodynf1">>
    , <<"created_at">> := _CreatedAt
    } = sr_json:decode(Body1),
 
   ct:comment("Unable to get non-existing newsitem with a valid newspaper"),
   #{status_code := 404} =
-    canillita_test_utils:api_call(get, NewsItem1Url ++ "/non-existing-id"),
+    canillita_test_utils:api_call(get, NewsItem1Url  ++  "/non-existing-id"),
 
   ct:comment("Unable to get existing newsitem id with invalid newspaper"),
   #{status_code := 404} =
     canillita_test_utils:api_call(
       get
-    , "/newspapers/non-existing-newspaper/news/" ++ NewsItem1Id
+    , "/newspapers/non-existing-newspaper/news/"  ++  NewsItem1Id
     ),
 
   {comment, ""}.

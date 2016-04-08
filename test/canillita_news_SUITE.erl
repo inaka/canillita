@@ -65,13 +65,7 @@ news_api_test(_Config) ->
      , event => NewspaperBin
      , data => [<<"title1">>, <<"body1">>]
      },
-  ParsedEvent1 =
-    ktn_task:wait_for(
-      fun() ->
-          [{_, _, EventBin1}] = shotgun:events(AsyncPid)
-        , shotgun:parse_event(EventBin1)
-      end, ParsedEvent1, 100, 10
-    ),
+  ParsedEvent1 = wait_for_parsed_event(AsyncPid, ParsedEvent1),
   Id1 = maps:get(id, ParsedEvent1),
 
   % create a new newsitem
@@ -85,13 +79,7 @@ news_api_test(_Config) ->
      , event => NewspaperBin
      , data => [<<"title2">>, <<"body2">>]
      },
-  ParsedEvent2 =
-    ktn_task:wait_for(
-      fun() ->
-          [{_, _, EventBin2}] = shotgun:events(AsyncPid)
-        , shotgun:parse_event(EventBin2)
-      end, ParsedEvent2, 100, 10
-    ),
+  ParsedEvent2 = wait_for_parsed_event(AsyncPid, ParsedEvent2),
   Id2 = maps:get(id, ParsedEvent2),
 
   %create a new newsitem for a different newspaper
@@ -105,13 +93,7 @@ news_api_test(_Config) ->
      , event => NewspaperBin2
      , data => [<<"title3">>, <<"body3">>]
      },
-  ParsedEvent3 =
-    ktn_task:wait_for(
-      fun() ->
-          [{_, _, EventBin3}] = shotgun:events(AsyncPid)
-        , shotgun:parse_event(EventBin3)
-      end, ParsedEvent3, 100, 10
-    ),
+  ParsedEvent3 = wait_for_parsed_event(AsyncPid, ParsedEvent3),
   Id3 = maps:get(id, ParsedEvent3),
 
   % close shotgun connection
@@ -157,16 +139,18 @@ last_event_id_test(_Config) ->
      , data => [<<"title2">>, <<"body2">>]
      },
   % only the last newsitem must be returned
-  ParsedEvent2 =
-    ktn_task:wait_for(
-      fun() ->
-          [{_, _, EventBin2}] = shotgun:events(AsyncPid)
-        , shotgun:parse_event(EventBin2)
-      end, ParsedEvent2, 100, 10
-    ),
+  ParsedEvent2 = wait_for_parsed_event(AsyncPid, ParsedEvent2),
   Id2 = maps:get(id, ParsedEvent2),
 
   % close SSE connection
   shotgun:close(AsyncPid),
 
   {comment, ""}.
+
+wait_for_parsed_event(AsyncPid, ParsedEvent) ->
+  ktn_task:wait_for(
+    fun() ->
+        [{_, _, EventBin}] = shotgun:events(AsyncPid)
+      , shotgun:parse_event(EventBin)
+    end, ParsedEvent, 100, 10
+  ).
