@@ -44,7 +44,7 @@ trails() ->
         }
      },
   Path = "/newspapers/:name/news/:id",
-  Options = #{path => Path, model => canillita_newsitems},
+  Options = #{path => Path, model => canillita_newsitems, verbose => true},
   [trails:trail(Path, ?MODULE, Options, Metadata)].
 
 -spec resource_exists( Req::cowboy_req:req(), State::state()) ->
