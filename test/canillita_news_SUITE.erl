@@ -61,15 +61,15 @@ news_api_test(_Config) ->
   Id1 = maps:get(<<"id">>, sr_json:decode(RespBody1)),
   % check it matches the expected response
   ParsedEvent1 =
-    #{ id => Id1
+    #{ id    => Id1
      , event => NewspaperBin
-     , data => [<<"title1">>, <<"body1">>]
+     , data  => <<"title1\nbody1\n">>
      },
   ParsedEvent1 =
     ktn_task:wait_for(
       fun() ->
-          [{_, _, EventBin1}] = shotgun:events(AsyncPid)
-        , shotgun:parse_event(EventBin1)
+        [{_EndFlag, _Reference, EventBin}] = shotgun:events(AsyncPid),
+        shotgun:parse_event(EventBin)
       end, ParsedEvent1, 100, 10
     ),
   Id1 = maps:get(id, ParsedEvent1),
@@ -81,15 +81,15 @@ news_api_test(_Config) ->
   Id2 = maps:get(<<"id">>, sr_json:decode(RespBody2)),
   % check it matches the expected response
   ParsedEvent2 =
-    #{ id => Id2
+    #{ id    => Id2
      , event => NewspaperBin
-     , data => [<<"title2">>, <<"body2">>]
+     , data  => <<"title2\nbody2\n">>
      },
   ParsedEvent2 =
     ktn_task:wait_for(
       fun() ->
-          [{_, _, EventBin2}] = shotgun:events(AsyncPid)
-        , shotgun:parse_event(EventBin2)
+        [{_EndFlag, _Reference, EventBin}] = shotgun:events(AsyncPid),
+        shotgun:parse_event(EventBin)
       end, ParsedEvent2, 100, 10
     ),
   Id2 = maps:get(id, ParsedEvent2),
@@ -103,13 +103,13 @@ news_api_test(_Config) ->
   ParsedEvent3 =
     #{ id => Id3
      , event => NewspaperBin2
-     , data => [<<"title3">>, <<"body3">>]
+     , data => <<"title3\nbody3\n">>
      },
   ParsedEvent3 =
     ktn_task:wait_for(
       fun() ->
-          [{_, _, EventBin3}] = shotgun:events(AsyncPid)
-        , shotgun:parse_event(EventBin3)
+        [{_EndFlag, _Reference, EventBin}] = shotgun:events(AsyncPid)
+        , shotgun:parse_event(EventBin)
       end, ParsedEvent3, 100, 10
     ),
   Id3 = maps:get(id, ParsedEvent3),
@@ -154,14 +154,13 @@ last_event_id_test(_Config) ->
   ParsedEvent2 =
     #{ id => Id2
      , event => NewspaperBin
-     , data => [<<"title2">>, <<"body2">>]
+     , data => <<"title2\nbody2\n">>
      },
-  % only the last newsitem must be returned
   ParsedEvent2 =
     ktn_task:wait_for(
       fun() ->
-          [{_, _, EventBin2}] = shotgun:events(AsyncPid)
-        , shotgun:parse_event(EventBin2)
+        [{_EndFlag, _Reference, EventBin}] = shotgun:events(AsyncPid),
+        shotgun:parse_event(EventBin)
       end, ParsedEvent2, 100, 10
     ),
   Id2 = maps:get(id, ParsedEvent2),
@@ -170,3 +169,4 @@ last_event_id_test(_Config) ->
   shotgun:close(AsyncPid),
 
   {comment, ""}.
+

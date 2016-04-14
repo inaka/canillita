@@ -5,8 +5,7 @@
 
 -include_lib("mixer/include/mixer.hrl").
 -mixin([{ sr_entities_handler
-        , [ init/3
-          , rest_init/2
+        , [ init/2
           , resource_exists/2
           , allowed_methods/2
           , announce_req/2
@@ -57,9 +56,9 @@ trails() ->
   }.
 handle_post(Req, State) ->
   try
-    {ok, Body, Req1}      = cowboy_req:body(Req),
-    Json                  = sr_json:decode(Body),
-    {NewspaperName, _Req} = cowboy_req:binding(name, Req),
+    {ok, Body, Req1} = cowboy_req:body(Req),
+    Json             = sr_json:decode(Body),
+    NewspaperName    = cowboy_req:binding(name, Req),
     % Checks that the given newspaper does exists
     case canillita_newspapers_repo:exists(NewspaperName) of
       true ->

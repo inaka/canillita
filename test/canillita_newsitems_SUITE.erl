@@ -49,9 +49,11 @@ end_per_testcase(_TestCase, Config) ->
 success_scenario(_Config) ->
   Headers = #{<<"content-type">> => <<"application/json; charset=utf-8">>},
   % Every newsitem needs to be attached to an existing newspaper
-  Newspaper1 = create_newspaper(<<"newspaper1">>, <<"description1">>),
+  Newspaper1 =
+    canillita_test_utils:create_newspaper(<<"newspaper1">>, <<"description1">>),
   Newspaper1Bin = list_to_binary(Newspaper1),
-  Newspaper2 = create_newspaper(<<"newspaper2">>, <<"description2">>),
+  Newspaper2 =
+    canillita_test_utils:create_newspaper(<<"newspaper2">>, <<"description2">>),
   Newspaper2Bin = list_to_binary(Newspaper2),
 
   ct:comment("Create a newsitem"),
@@ -106,7 +108,8 @@ invalid_headers(_Config) ->
   InvalidAccept = #{ <<"content-type">> => <<"application/json">>
                    , <<"accept">> => <<"text/html">>
                    },
-  Newspaper1 = create_newspaper(<<"newspaper1">>, <<"description1">>),
+  Newspaper1 =
+  canillita_test_utils:create_newspaper(<<"newspaper1">>, <<"description1">>),
   NewsItem1Url = "/newspapers/"++Newspaper1++"/news",
   ct:comment("content-type must be provided for POST"),
   #{status_code := 415} =
@@ -126,7 +129,8 @@ invalid_headers(_Config) ->
   {comment, string()}.
 invalid_parameters(_Config) ->
   Headers = #{<<"content-type">> => <<"application/json">>},
-  Newspaper1 = create_newspaper(<<"newspaper1">>, <<"description1">>),
+  Newspaper1 =
+    canillita_test_utils:create_newspaper(<<"newspaper1">>, <<"description1">>),
   NewsItem1Url = "/newspapers/"++Newspaper1++"/news",
 
   ct:comment("Empty or broken parameters are reported"),
@@ -162,7 +166,8 @@ not_found(_Config) ->
                                  , NewsItem
                                  ),
 
-  Newspaper1 = create_newspaper(<<"newspaper1">>, <<"description1">>),
+  Newspaper1 =
+    canillita_test_utils:create_newspaper(<<"newspaper1">>, <<"description1">>),
   Newspaper1Bin = list_to_binary(Newspaper1),
   NewsItem1Url = "/newspapers/"++Newspaper1++"/news",
 
@@ -196,24 +201,3 @@ not_found(_Config) ->
 
   {comment, ""}.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% internal
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
--spec create_newspaper( Name::canillita_newspapers:name()
-                      , Description::canillita_newspapers:description()
-                      ) -> iodata().
-create_newspaper(Name, Description) ->
-  Headers = #{<<"content-type">> => <<"application/json; charset=utf-8">>},
-  #{status_code := 201, body := NewspaperBody} =
-    canillita_test_utils:api_call(
-      post
-    , "/newspapers"
-    , Headers
-    , #{ name => Name
-       , description => Description
-       }
-    ),
-  Newspaper = sr_json:decode(NewspaperBody),
-  Name = maps:get(<<"name">>, Newspaper),
-  binary_to_list(Name).

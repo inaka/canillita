@@ -11,16 +11,22 @@
 -export([notify/1]).
 
 %% lasse_handler behaviour callbacks
--export([ init/3
+-export([ init/2
         , handle_notify/2
         , handle_info/2
         , handle_error/3
         , terminate/3
         ]).
 
--type options() :: #{path => string()}.
 -type last_event_id() :: binary() | undefined.
--type state() :: #{}.
+
+-record(state,
+        {
+          module :: module(),
+          state :: any()
+        }).
+
+-type state() :: #state{}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% trails_handler callback
@@ -69,17 +75,16 @@ notify(Event) ->
 %% @doc Will be called upon initialization of the handler, receiving the
 %%      value of the "last-event-id" header if there is one or
 %%      `undefined` otherwise.
--spec init( InitArgs::options()
-          , LastEventId::last_event_id()
+-spec init( LastEventId::last_event_id()
           , Req::cowboy_req:req()
           ) ->
   {ok, cowboy_req:req(), [lasse_handler:event()], state()}.
-init(_InitArgs, LastEventId, Req) ->
-  Req1 = sr_entities_handler:announce_req(Req, #{}),
+init(LastEventId, Req) ->
+  ok = sr_entities_handler:announce_req(Req, #{}),
   NewsItems = canillita_newsitems_repo:fetch_since(LastEventId),
   News = [canillita_newsitems:to_sse(NewsItem) || NewsItem <- NewsItems],
   ok = pg2:join(canillita_listeners, self()),
-  {ok, Req1, News, #{}}.
+  {ok, Req, News, #state{}}.
 
 %% @doc Receives and processes in-band messages sent through the
 %%      lasse_handler:notify/2 function.

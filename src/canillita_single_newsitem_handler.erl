@@ -5,8 +5,7 @@
 
 -include_lib("mixer/include/mixer.hrl").
 -mixin([{ sr_single_entity_handler
-        , [ init/3
-          , rest_init/2
+        , [ init/2
           , allowed_methods/2
           , content_types_accepted/2
           , content_types_provided/2
@@ -52,8 +51,8 @@ trails() ->
   {boolean(), cowboy_req:req(), state()}.
 resource_exists(Req, State) ->
   #{opts := #{model := _Model}, id := Id} = State,
-  {NewspaperName, Req2} = cowboy_req:binding(name, Req),
+  NewspaperName = cowboy_req:binding(name, Req),
   case canillita_newsitems_repo:fetch(NewspaperName, Id) of
-    notfound -> {false, Req2, State};
-    Entity -> {true, Req2, State#{entity => Entity}}
+    notfound -> {false, Req, State};
+    Entity -> {true, Req, State#{entity => Entity}}
   end.
