@@ -109,7 +109,7 @@ invalid_headers(_Config) ->
                    , <<"accept">> => <<"text/html">>
                    },
   Newspaper1 =
-  canillita_test_utils:create_newspaper(<<"newspaper1">>, <<"description1">>),
+   canillita_test_utils:create_newspaper(<<"newspaper1">>, <<"description1">>),
   NewsItem1Url = "/newspapers/"++Newspaper1++"/news",
   ct:comment("content-type must be provided for POST"),
   #{status_code := 415} =
