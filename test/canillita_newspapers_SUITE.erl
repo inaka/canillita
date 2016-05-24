@@ -32,7 +32,7 @@ init_per_testcase(_TestCase, Config) ->
   Config.
 
 -spec end_per_testcase( TestCase::atom()
-                      , Config::canillita_test_utils:confi()
+                      , Config::canillita_test_utils:config()
                       ) -> canillita_test_utils:config().
 end_per_testcase(_TestCase, Config) ->
   Config.
