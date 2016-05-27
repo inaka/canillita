@@ -41,5 +41,5 @@ trails() ->
          }
      },
   Path = "/newspapers",
-  Options = #{path => Path, model => canillita_newspapers},
+  Options = #{path => Path, model => canillita_newspapers, verbose => true},
   [trails:trail(Path, ?MODULE, Options, Metadata)].

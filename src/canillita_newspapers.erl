@@ -71,7 +71,7 @@ sumo_wakeup(Newspaper) -> Newspaper.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% @doc Convert a newspaper from its system representation to json.
--spec to_json(Newspaper::newspaper()) -> newspaper().
+-spec to_json(Newspaper::newspaper()) -> sr_json:json().
 to_json(Newspaper) ->
   #{ name         => maps:get(name, Newspaper)
    , description  => maps:get(description, Newspaper)
@@ -113,7 +113,7 @@ update(Newspaper, Json) ->
 
 %% @doc Specify the uri part that uniquely identifies a Newspaper.
 -spec location(Newspaper::newspaper(), Path::sumo_rest_doc:path()) -> iodata().
-location(Newspaper, Path) -> iolist_to_binary([Path, name(Newspaper)]).
+location(Newspaper, Path) -> iolist_to_binary([Path, $/, name(Newspaper)]).
 
 %% @doc Optional callback id/1 to let sumo_rest avoid duplicated keys (and
 %%      return `409 Conflict` in that case).
