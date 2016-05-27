@@ -24,6 +24,8 @@ $ _rel/canillita/bin/canillita console
 ```
 After that you're just good to go.
 
+Or you can download a compiled app from the latest release.
+
 ### RESTful API
 After starting the server you can go to `http://localhost:4892/api-docs` and it will give you a nice and practical documentation for Canillita thanks to `cowboy-swagger` and `cowboy-trails`.
 
