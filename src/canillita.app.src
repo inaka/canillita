@@ -1,6 +1,6 @@
 {application, canillita, [
   {description, "Canillita - your first Erlang server!"},
-  {vsn, "2.0.0"},
+  {vsn, "2.0.1"},
   {modules, []},
   {registered, []},
   {applications, [
