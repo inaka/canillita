@@ -22,10 +22,11 @@ handle_info(_Info, State) ->
 handle_call(_Request, State) ->
   {ok, not_implemented, State}.
 
-handle_event({canillita_newsitems, created, [Entity]}, State) ->
+handle_event({_EventId, canillita_newsitems, persisted, [Entity]}, State) ->
   canillita_news_handler:notify(Entity),
   {ok, State};
-handle_event(_Event, State) ->
+handle_event(Event, State) ->
+  _ = lager:info("Ignored event: ~p", [Event]),
   {ok, State}.
 
 code_change(_OldVsn, State, _Extra) ->

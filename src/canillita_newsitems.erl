@@ -61,7 +61,7 @@ sumo_schema() ->
 
 %% @doc Convert a newspaper from its system representation to sumo's
 %%      internal one.
--spec sumo_sleep(NewsItem::news_item()) -> sumo:doc().
+-spec sumo_sleep(NewsItem::news_item()) -> sumo:model().
 sumo_sleep(NewsItem) -> NewsItem.
 
 %% @doc Convert a newspaper from sumo's internal representation to its
@@ -74,7 +74,7 @@ sumo_wakeup(NewsItem) -> NewsItem.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% @doc Convert a newspaper from its system representation to json.
--spec to_json(NewsItem::news_item()) -> news_item().
+-spec to_json(NewsItem::news_item()) -> sr_json:json().
 to_json(NewsItem) ->
   #{ id => sr_json:encode_null(maps:get(id, NewsItem))
    , newspaper_name => maps:get(newspaper_name, NewsItem)
@@ -84,7 +84,7 @@ to_json(NewsItem) ->
    }.
 
 %% @doc Convert a newspaper from json to its system representation.
--spec from_json(NewspaperName::newspaper_name(), Json::sumo_rest_doc:json()) ->
+-spec from_json(NewspaperName::newspaper_name(), sumo_rest_doc:json()) ->
   {ok, news_item()} | {error, iodata()}.
 from_json(NewspaperName, Json) ->
   from_json(Json#{<<"newspaper_name">> => NewspaperName}).

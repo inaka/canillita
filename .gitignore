@@ -1,3 +1,6 @@
+*.crashdump
+compile_commands.json
+_build/
 canillita.d
 relx
 _rel/

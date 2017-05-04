@@ -44,7 +44,7 @@ trails() ->
      , put =>
        #{ tags => ["newspapers"]
         , description => "Updates or creates a new newspaper"
-        , consumes => ["application/json"]
+        , consumes => ["application/json", "application/json; charset=utf-8"]
         , produces => ["application/json"]
         , parameters => [RequestBody, Id]
         }
