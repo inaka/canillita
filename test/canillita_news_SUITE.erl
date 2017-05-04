@@ -150,7 +150,9 @@ last_event_id_test(_Config) ->
 wait_for_parsed_event(AsyncPid, ParsedEvent) ->
   ktn_task:wait_for(
     fun() ->
-        [{_, _, EventBin}] = shotgun:events(AsyncPid)
-      , shotgun:parse_event(EventBin)
-    end, ParsedEvent, 100, 10
+        [{_, _, EventBin}] = shotgun:events(AsyncPid),
+        Event = shotgun:parse_event(EventBin),
+        #{data := AllData} = Event,
+        Event#{data := binary:split(AllData, <<"\n">>, [global, trim])}
+    end, ParsedEvent, 300, 10
   ).

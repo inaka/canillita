@@ -33,7 +33,7 @@
   , from_json/1
   , update/2
   , location/2
-  , id/1
+  , duplication_conditions/1
   ]).
 
 %% public API
@@ -50,7 +50,7 @@
 sumo_schema() ->
   sumo:new_schema(
     ?MODULE,
-    [ sumo:new_field(name, string, [id, unique])
+    [ sumo:new_field(name, binary, [id, unique])
     , sumo:new_field(description, string, [not_null])
     , sumo:new_field(created_at, datetime, [not_null])
     , sumo:new_field(updated_at, datetime, [not_null])
@@ -58,7 +58,7 @@ sumo_schema() ->
 
 %% @doc Convert a newspaper from its system representation to sumo's
 %%      internal one.
--spec sumo_sleep(Newspaper::newspaper()) -> sumo:doc().
+-spec sumo_sleep(Newspaper::newspaper()) -> sumo:model().
 sumo_sleep(Newspaper) -> Newspaper.
 
 %% @doc Convert a newspaper from sumo's internal representation to its
@@ -115,10 +115,12 @@ update(Newspaper, Json) ->
 -spec location(Newspaper::newspaper(), Path::sumo_rest_doc:path()) -> iodata().
 location(Newspaper, Path) -> iolist_to_binary([Path, $/, name(Newspaper)]).
 
-%% @doc Optional callback id/1 to let sumo_rest avoid duplicated keys (and
-%%      return `409 Conflict` in that case).
--spec id(Newspaper::newspaper()) -> name().
-id(Newspaper) -> name(Newspaper).
+%% @doc Optional callback duplication_conditions/1 to let sumo_rest avoid
+%%      duplicated keys (and return `422 Conflict` in that case).
+-spec duplication_conditions(newspaper()) ->
+  sumo_rest_doc:duplication_conditions().
+duplication_conditions(Newspaper) ->
+  {name, name(Newspaper)}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% public API

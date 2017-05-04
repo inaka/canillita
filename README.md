@@ -11,16 +11,16 @@ This is canillita **v2**, if you're looking for **v1** switch to branch [v1](htt
 **Canillita** provides a RESTful API that allow us to manage `news` by `newspaper` and every time a `news item` is published, the listeners get a notification with it.
 
 ### Tests
-You can run the tests executing `make tests` in the root folder of the app.
+You can run the tests executing `rebar3 do dialyzer, ct` in the root folder of the app.
 
 ### The Server
 In order to run this application you need to execute the following commands:
 
 ```
 # Create release
-$ make rel
+$ rebar3 release
 # Run server
-$ _rel/canillita/bin/canillita console
+$ _build/default/rel/canillita/bin/canillita console
 ```
 After that you're just good to go.
 

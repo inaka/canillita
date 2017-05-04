@@ -72,7 +72,7 @@ success_scenario(_Config) ->
     canillita_test_utils:api_call(get, "/newspapers"),
   [Newspaper1] = sr_json:decode(Body2),
 
-  ct:comment("And we can fetch it"),
+  ct:comment("And we can fetch it (~p)", [Newspaper1]),
   #{status_code := 200, body := Body21} =
     canillita_test_utils:api_call(get, "/newspapers/newspaper1"),
   Newspaper1 = sr_json:decode(Body21),
@@ -157,7 +157,7 @@ duplicated_name(_Config) ->
     canillita_test_utils:api_call(post, "/newspapers", Headers, Body),
 
   ct:comment("Newspaper1 can't be created again"),
-  #{status_code := 409} =
+  #{status_code := 422} =
     canillita_test_utils:api_call(post, "/newspapers", Headers, Body),
 
   {comment, ""}.

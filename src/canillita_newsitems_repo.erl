@@ -29,7 +29,7 @@ fetch_since(LastEventId) ->
 %% @doc returns the newsitem identified with the given id.
 -spec fetch(Id::canillita_newsitems:id()) -> notfound | sumo_rest_doc:entity().
 fetch(Id) ->
-  sumo:find(canillita_newsitems, Id).
+  sumo:fetch(canillita_newsitems, Id).
 
 %% @doc returns all the newsitems stored so far.
 -spec fetch_all() -> [sumo_rest_doc:entity()].

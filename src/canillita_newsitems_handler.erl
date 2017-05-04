@@ -40,7 +40,7 @@ trails() ->
     #{ post =>
        #{ tags => ["newsitems"]
         , description => "Creates a new news item"
-        , consumes => ["application/json"]
+        , consumes => ["application/json", "application/json; charset=utf-8"]
         , produces => ["application/json"]
         , parameters => [NewspaperName, RequestBody]
         }
@@ -70,8 +70,8 @@ handle_post(Req, State) ->
             handle_post(Entity, Req1, State)
         end;
       false ->
-        cowboy_req:reply(404, Req),
-        {halt, Req, State}
+        {ok, Req1} = cowboy_req:reply(404, Req),
+        {halt, Req1, State}
     end
   catch
     _:badjson ->

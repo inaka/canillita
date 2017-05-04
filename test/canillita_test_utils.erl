@@ -69,7 +69,7 @@ async_api_call(Uri, Headers) ->
     Options = #{async => true, async_mode => sse},
     {ok, _Ref} = shotgun:get(Pid, Uri, Headers, Options)
   catch
-    _:Exception -> throw({error, Exception})
+    _:Exception -> exit({error, Exception})
   end,
   Pid.
 

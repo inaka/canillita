@@ -47,12 +47,11 @@ trails() ->
   Options = #{path => Path, model => canillita_newsitems, verbose => true},
   [trails:trail(Path, ?MODULE, Options, Metadata)].
 
--spec resource_exists( Req::cowboy_req:req(), State::state()) ->
+-spec resource_exists(cowboy_req:req(), state()) ->
   {boolean(), cowboy_req:req(), state()}.
 resource_exists(Req, State) ->
-  #{opts := #{model := _Model}, id := Id} = State,
   {NewspaperName, Req2} = cowboy_req:binding(name, Req),
-  case canillita_newsitems_repo:fetch(NewspaperName, Id) of
+  case canillita_newsitems_repo:fetch(NewspaperName, sr_state:id(State)) of
     notfound -> {false, Req2, State};
-    Entity -> {true, Req2, State#{entity => Entity}}
+    Entity -> {true, Req2, sr_state:entity(State, Entity)}
   end.
