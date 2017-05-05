@@ -8,7 +8,7 @@
  {<<"goldrush">>,{pkg,<<"goldrush">>,<<"0.1.9">>},1},
  {<<"hive">>,
   {git,"git@github.com:esl/hive.git",
-       {ref,"3a8eeb9c16aab5a9cf1b036d5bfd9e031a56910f"}},
+       {ref,"3876c4acaa3fba58cd4baa60111ecac0cc55127e"}},
   0},
  {<<"iso8601">>,{pkg,<<"inaka_iso8601">>,<<"1.1.2">>},1},
  {<<"jiffy">>,{pkg,<<"jiffy">>,<<"0.14.7">>},1},

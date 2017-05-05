@@ -8,7 +8,7 @@
 -export([trails/0]).
 
 %% API
--export([notify/1]).
+-export([notify/2]).
 
 %% lasse_handler behaviour callbacks
 -export([ init/3
@@ -53,14 +53,8 @@ trails() ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% @doc sends an event to all the listeners
--spec notify(Event::canillita_newsitems:news_item()) -> ok.
-notify(Event) ->
-  lists:foreach(
-    fun(Listener) ->
-      lasse_handler:notify(Listener, Event)
-    end,
-    pg2:get_members(canillita_listeners)
-   ).
+-spec notify(pid(), canillita_newsitems:news_item()) -> ok.
+notify(Listener, NewsItem) -> lasse_handler:notify(Listener, NewsItem).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% lasse_handler callbacks
@@ -78,7 +72,7 @@ init(_InitArgs, LastEventId, Req) ->
   Req1 = sr_entities_handler:announce_req(Req, #{}),
   NewsItems = canillita_newsitems_repo:fetch_since(LastEventId),
   News = [canillita_newsitems:to_sse(NewsItem) || NewsItem <- NewsItems],
-  ok = pg2:join(canillita_listeners, self()),
+  {ok, _} = canillita_listeners:join(),
   {ok, Req1, News, #{}}.
 
 %% @doc Receives and processes in-band messages sent through the
