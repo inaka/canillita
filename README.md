@@ -32,8 +32,6 @@ After starting the server you can go to `http://localhost:4892/api-docs` and it 
 ---
 
 ## Contact Us
-For **questions** or **general comments** regarding the use of this project, please use our public [hipchat room](http://inaka.net/hipchat).
-
 If you find any **bugs** or have a **problem** while using this project, please [open an issue](https://github.com/inaka/canillita/issues/new) in this repo (or a pull request :\)).
 
 And you can check all of our open-source projects at [inaka.github.io](http://inaka.github.io)
