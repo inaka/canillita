@@ -9,7 +9,8 @@
       mnesia,
       sasl,
       sumo_rest,
-      lasse
+      lasse,
+      hive
   ]},
   {mod, {canillita, []}},
   {env, []},

@@ -77,6 +77,4 @@ start_phase(start_canillita_events_management, _StartType, []) ->
   ok = gen_event:add_handler( canillita_newsitems_events_manager
                             , canillita_newsitems_events_handler
                             , []
-                            ),
-  % Create pg2 group to hold news listeners
-  pg2:create(canillita_listeners).
+                            ).
